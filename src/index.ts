@@ -25,7 +25,7 @@ const game = new Game({
       backgroundColor: 0xffffff,
       antialias: true,
       enableScroll: false,
-      resolution: window.devicePixelRatio
+      resolution: window.devicePixelRatio / 2
     }),
     new ImgSystem(),
     new TransitionSystem(),
@@ -35,7 +35,7 @@ const game = new Game({
     new GraphicsSystem(),
     new TextSystem(),
     new PhysicsSystem({
-      resolution: window.devicePixelRatio,
+      resolution: window.devicePixelRatio / 2,
       // isTest: true, // Whether to enable debugging mode
       // element: document.getElementById('game-container'), // Mount point of canvas node in debug mode
       world: {
