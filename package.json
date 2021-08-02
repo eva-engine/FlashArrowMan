@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@eva/eva.js": "^1.0.0",
+    "@eva/plugin-matterjs": "^1.0.11",
     "@eva/plugin-renderer": "^1.0.0",
     "@eva/plugin-renderer-event": "^1.0.0",
     "@eva/plugin-renderer-graphics": "^1.0.0",

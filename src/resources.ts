@@ -1,24 +1,24 @@
 import { RESOURCE_TYPE } from '@eva/eva.js';
 export default [
   {
-    name: 'basketball',
+    name: 'qian',
     type: RESOURCE_TYPE.IMAGE,
     src: {
       image: {
         type: 'png',
-        url: './statics/TB1WF1R0Ez1gK0jSZLeXXb9kVXa-99-99.png',
+        url: './statics/qian.png',
       },
     },
     preload: true,
   },
   {
-    name: 'backboard',
+    name: 'bow',
     type: RESOURCE_TYPE.IMAGE,
     src: {
       image: {
         type: 'png',
         url:
-          './statics/TB1a11YoRFR4u4jSZFPXXanzFXa-109-263.png',
+          './statics/bow.png',
       },
     },
     preload: true,
