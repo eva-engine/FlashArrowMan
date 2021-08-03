@@ -13,6 +13,7 @@ import { BOW_CD, GAME_HEIGHT, GAME_WIDTH, QIAN_CD } from './const';
 import createQian from './gameObjects/qian';
 import { Physics, PhysicsSystem, PhysicsType } from '@eva/plugin-matterjs';
 import Progress from './components/Progress';
+import BowString from './components/BowString';
 
 resource.addResource(resources);
 
@@ -62,15 +63,29 @@ let bow = new GameObject('bow', {
     height: 44,
   },
   position: { x: Infinity, y: Infinity },
-  origin: { x: 96 / 200, y: 12 / 44 }
+  origin: { x: 0.5, y: 12 / 44 }
 })
 
 bow.addComponent(new Img({ resource: 'bow' }))
 game.scene.addChild(bow)
 
+
+
+const bowString = new GameObject('bowString', {
+  anchor: {
+    x: 0.5, y: 0
+  },
+})
+
+const string = bowString.addComponent(new BowString())
+
+string.setPercent(80)
+
+bow.addChild(bowString)
+
 const progressGo = new GameObject('', {
   position: {
-    x:  70, y: 1000
+    x: 70, y: 1000
   }
 })
 
@@ -109,6 +124,7 @@ evt.on('touchmove', (e) => {
   const dy = e.data.position.y - startPos.y
   if (dy < 0) return
   const r = Math.atan(dy / dx)
+  if (Math.abs(r) < 20 / 180 * Math.PI) return
   let tmp = Math.PI / 2 - Math.abs(r)
   tmp = r < 0 ? tmp : -tmp
   go.transform.rotation = tmp
@@ -125,7 +141,7 @@ evt.on('touchmove', (e) => {
 
   force = Math.sqrt(tx ** 2 + ty ** 2)
 
-  const bx = 40 * Math.sqrt(1 / (tx ** 2 + ty ** 2)) * tx
+  const bx = 20 * Math.sqrt(1 / (tx ** 2 + ty ** 2)) * tx
   const by = bx / tx * ty
   // const bx = 0
   // const by = 0
@@ -133,19 +149,22 @@ evt.on('touchmove', (e) => {
 
   go.transform.position.x = startPos.x + tx * 0.3 - bx
   go.transform.position.y = startPos.y + ty * 0.3 - by
+
+
+  string.setPercent(force * 0.3 - 10)
 })
 
 evt.on('touchend', () => {
   if (!doing) return
   console.log(force)
-  const speed2 = 0.007 + force / 18000 // 这是速度的平方
+  const speed2 = (0.007 + force / 18000) / 10 // 这是力
   const r = Math.tan(go.transform.rotation + Math.PI / 2)
   let x = Math.sqrt(speed2 / (1 + r ** 2))
   x = r > 0 ? -x : x
   let y = r * x
-  console.log(x,y)
-// x =0
-// y=-0.2
+  console.log(x, y)
+  // x =0
+  // y=-0.2
   go.addComponent(new Physics({
     type: PhysicsType.RECTANGLE,
     bodyOptions: {
@@ -164,6 +183,8 @@ evt.on('touchend', () => {
   progress.qian()
   progress.bow()
   doing = false
+  string.setPercent(0)
+
 })
 
 evt.on('touchendoutside', () => {
@@ -174,7 +195,7 @@ evt.on('touchendoutside', () => {
 
 
 const text = new GameObject('', {
-  position: {x: 375, y: 40},
+  position: { x: 375, y: 40 },
 
   origin: {
     x: 0.5,
@@ -189,3 +210,7 @@ text.addComponent(new Text({
   }
 }))
 game.scene.addChild(text)
+
+
+
+

@@ -18,7 +18,7 @@ export default class Progress extends Component {
   private qianStop = false
   private bowStop = false
 
-  awake() {
+  init() {
     const back = new GameObject('back');
     const front = new GameObject('front')
     const bow = new GameObject('bow')
