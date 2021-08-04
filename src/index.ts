@@ -9,11 +9,14 @@ import { RenderSystem } from '@eva/plugin-renderer-render';
 import { TransitionSystem } from '@eva/plugin-transition';
 import { Graphics, GraphicsSystem } from '@eva/plugin-renderer-graphics';
 import { Text, TextSystem } from '@eva/plugin-renderer-text';
-import { BOW_CD, GAME_HEIGHT, GAME_WIDTH, QIAN_CD } from './const';
+import { BOW_CD, GAME_HEIGHT, GAME_WIDTH, QIAN_CD, QIAN_PHYSICS_CONFIG } from './const';
 import createQian from './gameObjects/qian';
 import { Physics, PhysicsSystem, PhysicsType } from '@eva/plugin-matterjs';
 import Progress from './components/Progress';
 import BowString from './components/BowString';
+import { emitQian, on } from './socketUtil';
+import { EmitMsgStruct, OnMsgStruct } from './type';
+import Matterjs from 'matter-js'
 
 resource.addResource(resources);
 
@@ -62,14 +65,27 @@ let bow = new GameObject('bow', {
     width: 200,
     height: 44,
   },
-  position: { x: Infinity, y: Infinity },
+  position: { x: 100, y: 100 },
   origin: { x: 0.5, y: 12 / 44 }
 })
 
 bow.addComponent(new Img({ resource: 'bow' }))
 game.scene.addChild(bow)
 
+const box = new GameObject('box', {
+  size: {
+    width: 200,
+    height: 44,
+  },
+  origin: {
+    x: 0.5,
+    y: 0.5
+  }
+})
 
+box.addComponent(new Img({ resource: 'bow' }))
+
+game.scene.addChild(box)
 
 const bowString = new GameObject('bowString', {
   anchor: {
@@ -103,10 +119,35 @@ const evt = game.scene.addComponent(new Event())
 evt.on('touchstart', (e) => {
   if (progress.canBow()) {
     progress.bow()
+    box.removeComponent(Physics)
     // 放置弓箭
     bow.transform.position.x = e.data.position.x
     bow.transform.position.y = e.data.position.y
 
+
+
+    box.transform.position.x = e.data.position.x
+    box.transform.position.y = e.data.position.y
+    const physics = box.addComponent(new Physics({
+      type: PhysicsType.RECTANGLE,
+      bodyOptions: {
+        restitution: 0,
+        frictionAir: 0,
+        friction: 0,
+        frictionStatic: 0,
+        stopRotation: false,
+        collisionFilter: {
+          group: -1
+        },
+        isStatic: true,
+      },
+    }))
+
+    physics.on('collisionStart', (x) => {
+      console.log(x)
+      x.destroy()
+      
+    })
     // 记录起始位置
     startQian.x = e.data.position.x
     startQian.y = e.data.position.y
@@ -168,15 +209,14 @@ evt.on('touchend', () => {
   go.addComponent(new Physics({
     type: PhysicsType.RECTANGLE,
     bodyOptions: {
-      isStatic: false, // Whether the object is still, any force acting on the object in a static state will not produce any effect
-      restitution: 0.8,
-      frictionAir: 0.02,
-      friction: 0,
-      frictionStatic: 0,
+      ...QIAN_PHYSICS_CONFIG,
       force: {
         x,
         y,
       },
+      collisionFilter: {
+        group: -1
+      }
     },
     stopRotation: true,
   }))
@@ -184,15 +224,13 @@ evt.on('touchend', () => {
   progress.bow()
   doing = false
   string.setPercent(0)
-
+  console.log({ x, y }, 1)
+  emitQian({ position: go.transform.position, force: { x, y }, rotation: go.transform.rotation })
 })
 
 evt.on('touchendoutside', () => {
   evt.emit('touchend')
 })
-
-
-
 
 const text = new GameObject('', {
   position: { x: 375, y: 40 },
@@ -214,3 +252,32 @@ game.scene.addChild(text)
 
 
 
+on(data => {
+  if (data.type === 'turn') {
+    let { position: { x, y }, force, rotation } = (<EmitMsgStruct>data).data
+    x = GAME_WIDTH - x
+    y = -y
+    force.x = -force.x
+    force.y = -force.y
+
+    console.log(force, 2)
+
+    let enemy = createQian({ x, y })
+    enemy.transform.rotation = rotation + Math.PI
+
+    enemy.addComponent(new Physics({
+      type: PhysicsType.RECTANGLE,
+      bodyOptions: {
+        ...QIAN_PHYSICS_CONFIG,
+        force,
+        collisionFilter: {
+          category: 1
+        }
+      },
+      stopRotation: true,
+    }))
+
+    game.scene.addChild(enemy)
+
+  }
+})
