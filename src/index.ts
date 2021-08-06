@@ -26,7 +26,6 @@ const game = new Game({
       canvas: document.querySelector('#canvas'),
       width: GAME_WIDTH,
       height: GAME_HEIGHT,
-      backgroundColor: 0xffffff,
       antialias: true,
       enableScroll: false,
       resolution: window.devicePixelRatio / 2

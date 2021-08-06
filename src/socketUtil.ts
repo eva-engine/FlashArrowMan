@@ -1,6 +1,6 @@
 import { EmitDataStruct, EmitMsgStruct, InitDataStruct, MessageStruct } from "./type"
 
-const ws = new WebSocket('ws://47.93.8.254:8080')
+const ws = new WebSocket('wss://www.anxyser.xyz/qianserver')
 
 ws.onopen = (r) => {
   console.log('open', r)

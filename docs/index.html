@@ -9,27 +9,44 @@
       border: 0;
       font-size: 36px;
     }
+
     .nice {
       display: flex;
-      justify-content:center;
+      justify-content: center;
       align-items: center;
       font-size: 36px;
     }
+
     input {
       margin: 0 10px;
       font-size: 36px;
       width: 100px;
       border: 2px solid rgb(58, 58, 58);
     }
+
     button {
       margin: 0 10px;
       border: 2px solid rgb(58, 58, 58);
+    }
+
+    .tip {
+      font-size: 3.88vw;
+      color: #fff;
+      z-index: 111;
+      position: fixed;
+      bottom: 3vw;
     }
   </style>
 </head>
 
 <body>
   <canvas width="750" height="1000" id="canvas" style="width: 100%"></canvas>
+  <div class="tip">
+    目前在开发阶段<br />
+    弓的位置移动和射击都有冷却时间<br />
+    移动位置可等待左侧进度条完成<br />
+    微信：maydayfantast
+  </div>
   <script src="//cdn.bootcdn.net/ajax/libs/eventemitter3/3.1.2/index.min.js"></script>
   <script src="./main.js"></script>
 </body>
