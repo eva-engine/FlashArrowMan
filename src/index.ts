@@ -123,8 +123,6 @@ evt.on('touchstart', (e) => {
     bow.transform.position.x = e.data.position.x
     bow.transform.position.y = e.data.position.y
 
-
-
     box.transform.position.x = e.data.position.x
     box.transform.position.y = e.data.position.y
     const physics = box.addComponent(new Physics({
@@ -195,7 +193,7 @@ evt.on('touchmove', (e) => {
 
 evt.on('touchend', () => {
   if (!doing) return
-  console.log(force)
+  console.log(force, 'force')
   const speed2 = (0.007 + force / 18000) / 10 // 这是力
   const r = Math.tan(go.transform.rotation + Math.PI / 2)
   let x = Math.sqrt(speed2 / (1 + r ** 2))
@@ -224,6 +222,12 @@ evt.on('touchend', () => {
   string.setPercent(0)
   console.log({ x, y }, 1)
   sendEmitQian({ position: go.transform.position, force: { x, y }, rotation: go.transform.rotation, userId: userInfo.id })
+
+  setTimeout(() => {
+    try {
+      go.destroy()
+    } catch (e) { }
+  }, 3000)
 })
 
 evt.on('touchendoutside', () => {
@@ -256,6 +260,12 @@ on(data => {
     }))
 
     game.scene.addChild(enemy)
+
+    setTimeout(() => {
+      try {
+        enemy.destroy()
+      } catch (e) { }
+    }, 3000)
 
   }
 })

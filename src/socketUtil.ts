@@ -1,24 +1,6 @@
 import { EmitDataStruct, EmitMsgStruct, InitDataStruct, MessageStruct } from "./type"
 
-const ws = new WebSocket('wss://www.anxyser.xyz/qianserver')
-
-ws.onopen = (r) => {
-  console.log('open', r)
-}
-
-ws.onmessage = ({data:_data}) => {
-  const data = JSON.parse(_data) as MessageStruct
-  console.log('message', data)
-  switch (data.type) {
-    case 'turn':
-      emitQian(data.data as any)
-      break;
-    case 'init':
-      init(data.data as any)
-      break;
-  }
-}
-
+let ws: WebSocket
 
 export const userInfo: { id: number } = {
   id: -1
@@ -26,12 +8,40 @@ export const userInfo: { id: number } = {
 
 
 export function goInRoom() {
-  ws.send(JSON.stringify({
-    type: 'in',
-    data: {
-      token: 'aaa',
+
+
+  ws = new WebSocket('wss://www.anxyser.xyz/qianserver')
+
+  ws.onopen = (r) => {
+    console.log('open', r)
+    ws.send(JSON.stringify({
+      type: 'in',
+      data: {
+        token: 'aaa',
+      }
+    }))
+  }
+
+  ws.onmessage = ({ data: _data }) => {
+    const data = JSON.parse(_data) as MessageStruct
+    console.log('message', data)
+    switch (data.type) {
+      case 'turn':
+        emitQian(data.data as any)
+        break;
+      case 'init':
+        init(data.data as any)
+        break;
     }
-  }))
+  }
+
+  ws.onclose = () => {
+    console.log('onClose')
+    goInRoom()
+  }
+
+
+ 
 }
 
 export function sendEmitQian(data: EmitDataStruct) {
@@ -48,6 +58,7 @@ export function onAttack({ hp }: { hp: number }) {
 const list: ((n: MessageStruct) => void)[] = []
 
 export function emitQian(data: EmitDataStruct) {
+  console.log(data.userId , userInfo.id, 123)
   if (data.userId === userInfo.id) {
     return
   }
@@ -62,9 +73,12 @@ export function emitQian(data: EmitDataStruct) {
 export function init(data: InitDataStruct) {
   console.log('init', data)
   userInfo.id = data.id
-  goInRoom()
 }
 
 export function on(fn: (n: MessageStruct) => void) {
   list.push(fn)
 }
+
+
+goInRoom()
+
