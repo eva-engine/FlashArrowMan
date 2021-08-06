@@ -1,5 +1,5 @@
 export type ToSType = 'in' | 'out' | 'ready' | 'turn';
-export type ToBType = 'home' | 'error' | 'begin';
+export type ToBType = 'home' | 'error' | 'begin' | 'init';
 export type MessageType = ToSType | ToBType
 
 export type MessageStruct<D = unknown> = {
@@ -31,10 +31,18 @@ export type EmitDataStruct = {
     x: number,
     y: number
   }
-  rotation: number
+  rotation: number,
+  userId: number
 }
 export type EmitMsgStruct = MessageStruct<EmitDataStruct>
 
 export type OnMsgStruct = MessageStruct<{
   hp: number,
 }>
+
+
+export type InitDataStruct = {
+  id: number;
+}
+
+export type InitMsgStruct = MessageStruct<InitDataStruct>

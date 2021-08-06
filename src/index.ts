@@ -14,7 +14,7 @@ import createQian from './gameObjects/qian';
 import { Physics, PhysicsSystem, PhysicsType } from '@eva/plugin-matterjs';
 import Progress from './components/Progress';
 import BowString from './components/BowString';
-import { emitQian, on } from './socketUtil';
+import { emitQian, on, sendEmitQian, userInfo } from './socketUtil';
 import { EmitMsgStruct, OnMsgStruct } from './type';
 import Matterjs from 'matter-js'
 
@@ -65,7 +65,7 @@ let bow = new GameObject('bow', {
     width: 200,
     height: 44,
   },
-  position: { x: 100, y: 100 },
+  position: { x: -1000, y: -1000 },
   origin: { x: 0.5, y: 12 / 44 }
 })
 
@@ -83,7 +83,7 @@ const box = new GameObject('box', {
   }
 })
 
-box.addComponent(new Img({ resource: 'bow' }))
+// box.addComponent(new Img({ resource: 'bow' }))
 
 game.scene.addChild(box)
 
@@ -146,7 +146,6 @@ evt.on('touchstart', (e) => {
     physics.on('collisionStart', (x) => {
       console.log(x)
       x.destroy()
-      
     })
     // 记录起始位置
     startQian.x = e.data.position.x
@@ -225,32 +224,12 @@ evt.on('touchend', () => {
   doing = false
   string.setPercent(0)
   console.log({ x, y }, 1)
-  emitQian({ position: go.transform.position, force: { x, y }, rotation: go.transform.rotation })
+  sendEmitQian({ position: go.transform.position, force: { x, y }, rotation: go.transform.rotation, userId: userInfo.id })
 })
 
 evt.on('touchendoutside', () => {
   evt.emit('touchend')
 })
-
-const text = new GameObject('', {
-  position: { x: 375, y: 40 },
-
-  origin: {
-    x: 0.5,
-    y: 0.5
-  },
-})
-text.addComponent(new Text({
-  text: '我的很大，你忍一下',
-  style: {
-    fontSize: 70,
-    fill: 0xffffff,
-  }
-}))
-game.scene.addChild(text)
-
-
-
 
 on(data => {
   if (data.type === 'turn') {
