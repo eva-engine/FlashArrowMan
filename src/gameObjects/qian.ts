@@ -1,7 +1,7 @@
 import { GameObject } from "@eva/eva.js";
 import { Img } from "@eva/plugin-renderer-img";
 
-export default function createQian({ x, y }) {
+export default function createQian({ x, y }: { x: number, y: number }) {
   const go = new GameObject('qian', {
     size: {
       width: 6,

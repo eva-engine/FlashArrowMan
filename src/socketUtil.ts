@@ -1,4 +1,5 @@
-import { EmitDataStruct, EmitMsgStruct, InitDataStruct, MessageStruct } from "./type"
+import event from "./event"
+import { AttackDataStruct, AttackMsgStruct, EmitDataStruct, EmitMsgStruct, HomeMsgStruct, InitDataStruct, InitMsgStruct, MessageStruct, TurnType, UnionTurnStruct } from "./type"
 
 let ws: WebSocket
 
@@ -6,31 +7,62 @@ export const userInfo: { id: number } = {
   id: -1
 }
 
+export function goin(token: string) {
+  console.log('进入房间 ', token)
+  ws.send(JSON.stringify({
+    type: 'in',
+    data: {
+      token,
+    }
+  }))
+}
+export function goout() {
+  console.log('退出房间')
+  ws.send(JSON.stringify({
+    type: 'out',
+    data: {
+      // token,
+    }
+  }))
+}
+let index = 0
+let goinSuccess = false
+event.on('onHome', (data: HomeMsgStruct) => {
+  if (goinSuccess) {
+    event.emit('sendEveryOneMyHP')
+    return
+  }
+  if (data.data.users.length >= 3) {
+    goout()
+    setTimeout(()=>{
+      goin('root' + index++)
+    }, 300)
+  } else {
+    goinSuccess = true
+    event.emit('sendEveryOneMyHP')
+  }
+})
 
 export function goInRoom() {
-
-
   ws = new WebSocket('wss://www.anxyser.xyz/qianserver')
 
   ws.onopen = (r) => {
     console.log('open', r)
-    ws.send(JSON.stringify({
-      type: 'in',
-      data: {
-        token: 'aaa',
-      }
-    }))
+    goin('room' + index++)
   }
 
-  ws.onmessage = ({ data: _data }) => {
-    const data = JSON.parse(_data) as MessageStruct
+  ws.onmessage = ({ data: message }) => {
+    const data = JSON.parse(message)
     console.log('message', data)
     switch (data.type) {
       case 'turn':
-        emitQian(data.data as any)
+        turn(data as any)
         break;
       case 'init':
-        init(data.data as any)
+        init(data as any)
+        break;
+      case 'home':
+        home(data as any)
         break;
     }
   }
@@ -40,43 +72,41 @@ export function goInRoom() {
     goInRoom()
   }
 
-
- 
 }
 
-export function sendEmitQian(data: EmitDataStruct) {
+export function sendEmitQian(data: Omit<EmitDataStruct, 'type'>) {
   console.log('send', data)
   ws.send(JSON.stringify({
     type: 'turn',
-    data: data
+    data: { type: 'emit', ...data }
   }))
 }
 
-export function onAttack({ hp }: { hp: number }) {
+export function onAttack(data: Omit<AttackDataStruct, 'type'>) {
+  console.log('send Attack')
 
+  ws.send(JSON.stringify({
+    type: 'turn',
+    data: { type: 'attack', ...data }
+  }))
 }
-const list: ((n: MessageStruct) => void)[] = []
 
-export function emitQian(data: EmitDataStruct) {
-  console.log(data.userId , userInfo.id, 123)
-  if (data.userId === userInfo.id) {
+export function turn(data: UnionTurnStruct) {
+  console.log(data.from, userInfo.id, 123)
+  if (data.from === userInfo.id) {
     return
   }
-  list.forEach((fn) => {
-    fn({
-      type: 'turn',
-      data
-    })
-  })
+  event.emit('onTurn', data)
 }
 
-export function init(data: InitDataStruct) {
-  console.log('init', data)
-  userInfo.id = data.id
+export function init(data: InitMsgStruct) {
+  console.log('init', data.data)
+  userInfo.id = data.data.id
 }
 
-export function on(fn: (n: MessageStruct) => void) {
-  list.push(fn)
+
+export function home(data: HomeMsgStruct) {
+  event.emit('onHome', data)
 }
 
 

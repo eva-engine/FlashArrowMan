@@ -58,6 +58,7 @@ export default class Progress extends Component {
     p = p > 1 ? 1 : p
     if (p === 1) {
       this.qianStop = true
+      this.emit('qianReady')
     }
     this.setQianProgress(p)
   }
@@ -67,6 +68,7 @@ export default class Progress extends Component {
     p = p > 1 ? 1 : p
     if (p === 1) {
       this.bowStop = true
+      this.emit('bowReady')
     }
     this.setBowProgress(p)
   }

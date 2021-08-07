@@ -2,6 +2,8 @@ export type ToSType = 'in' | 'out' | 'ready' | 'turn';
 export type ToBType = 'home' | 'error' | 'begin' | 'init';
 export type MessageType = ToSType | ToBType
 
+export enum TurnType { attack = 'attack', emit = 'emit' }
+
 export type MessageStruct<D = unknown> = {
   type: MessageType,
   data: D,
@@ -22,7 +24,9 @@ export type HomeMsgStruct = MessageStruct<{
   master: number
 }>
 
+
 export type EmitDataStruct = {
+  type: TurnType.emit;
   force: {
     x: number,
     y: number
@@ -32,13 +36,21 @@ export type EmitDataStruct = {
     y: number
   }
   rotation: number,
-  userId: number
 }
+
+export type AttackDataStruct = {
+  type: TurnType.attack;
+  hp: number
+}
+
+export type AttackMsgStruct = MessageStruct<AttackDataStruct>
+
 export type EmitMsgStruct = MessageStruct<EmitDataStruct>
 
-export type OnMsgStruct = MessageStruct<{
-  hp: number,
-}>
+
+export type UnionTurnStruct = AttackMsgStruct | EmitMsgStruct
+
+
 
 
 export type InitDataStruct = {
