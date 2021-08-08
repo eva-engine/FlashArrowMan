@@ -8,7 +8,7 @@ export default function createHP({ position }: { position: { x: number, y: numbe
   })
 
   hp.addComponent(new Text({
-    text: '',
+    text: '匹配中...',
     style: {
       fontSize: 50,
       fill: 0xffffff
