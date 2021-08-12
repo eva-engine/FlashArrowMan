@@ -1,5 +1,10 @@
-export const GAME_WIDTH = 750
-export const GAME_HEIGHT = window.innerHeight / window.innerWidth * 750
+export const GAME_WIDTH = 1624
+export const GAME_HEIGHT = innerWidth / innerHeight * 1624
+// export const GAME_WIDTH = 750
+// export const GAME_HEIGHT = innerHeight / innerWidth * 750
+export const SCENE_HEIGHT = 750
+export const SCENE_WIDTH = innerHeight / innerWidth * 1624
+
 export const BOW_CD = 1000
 export const QIAN_CD = 300
 

@@ -9,7 +9,7 @@ import { RenderSystem } from '@eva/plugin-renderer-render';
 import { TransitionSystem } from '@eva/plugin-transition';
 import { Graphics, GraphicsSystem } from '@eva/plugin-renderer-graphics';
 import { TextSystem } from '@eva/plugin-renderer-text';
-import { GAME_HEIGHT, GAME_WIDTH, QIAN_PHYSICS_CONFIG } from './const';
+import { GAME_HEIGHT, GAME_WIDTH, QIAN_PHYSICS_CONFIG, SCENE_HEIGHT, SCENE_WIDTH } from './const';
 import createQian from './gameObjects/qian';
 import { Physics, PhysicsSystem, PhysicsType } from '@eva/plugin-matterjs';
 import Progress from './components/Progress';
@@ -19,13 +19,21 @@ import Player from './components/Player';
 import createHP from './gameObjects/myHP';
 import Attack from './components/Attack';
 import event from './event';
+import { makeHorizental } from './utils';
 
 resource.addResource(resources);
+const canvas = document.querySelector('#canvas')
+
+var orientation = (screen.orientation || {}).type || screen.mozOrientation || screen.msOrientation;
+console.log(orientation,123123123)
+if (orientation === 'portrait-primary') {
+  makeHorizental(canvas)
+}
 
 const game = new Game({
   systems: [
     new RendererSystem({
-      canvas: document.querySelector('#canvas'),
+      canvas,
       width: GAME_WIDTH,
       height: GAME_HEIGHT,
       antialias: true,
@@ -52,23 +60,33 @@ const game = new Game({
   ],
 });
 
-game.scene.transform.size.width = GAME_WIDTH;
+window.game = game
+
+game.scene.transform.size.width = GAME_WIDTH
 game.scene.transform.size.height = GAME_HEIGHT;
+
+// game.scene.transform.rotation = Math.PI / 2
+// game.scene.transform.position.x = GAME_WIDTH
 
 const graphics = game.scene.addComponent(new Graphics())
 graphics.graphics.beginFill(0x666666, 1)
 graphics.graphics.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT)
 graphics.graphics.endFill()
-
+let i = 0
 const evt = game.scene.addComponent(new Event())
-
+evt.on('tap', ()=>{
+  if (!i) {
+    document.documentElement.requestFullscreen()
+    i++
+  }
+})
 
 let bow = new GameObject('bow', {
   size: {
     width: 200,
     height: 44,
   },
-  position: { x: 375, y: 900 },
+  position: { x: 375, y: 470 },
   origin: { x: 0.5, y: 12 / 44 }
 })
 
@@ -121,7 +139,7 @@ bow.addChild(bowString)
 
 const progressGo = new GameObject('', {
   position: {
-    x: 70, y: 1000
+    x: 70, y: 600
   }
 })
 
@@ -130,7 +148,7 @@ const progress = progressGo.addComponent(new Progress({
 
 game.scene.addChild(progressGo)
 
-const { hp: myHP, hpText: myHPText } = createHP({ position: { y: 1100, x: 50 } })
+const { hp: myHP, hpText: myHPText } = createHP({ position: { y: 670, x: 50 } })
 game.scene.addChild(myHP)
 
 bow.addComponent(new Attack({ box, evt, progress, myHPText, string }))

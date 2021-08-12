@@ -64,6 +64,7 @@ export default class Attack extends Component {
   }
 
   touchstart(e) {
+    console.log(e.data.position,9999)
     if (this.progress.canBow()) {
       this.progress.bow()
       // 放置弓箭
