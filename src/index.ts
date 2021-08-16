@@ -9,7 +9,7 @@ import { RenderSystem } from '@eva/plugin-renderer-render';
 import { TransitionSystem } from '@eva/plugin-transition';
 import { Graphics, GraphicsSystem } from '@eva/plugin-renderer-graphics';
 import { TextSystem } from '@eva/plugin-renderer-text';
-import { GAME_HEIGHT, GAME_WIDTH, QIAN_PHYSICS_CONFIG, SCENE_HEIGHT, SCENE_WIDTH } from './const';
+import { GAME_HEIGHT, GAME_WIDTH, MOVE_SPEED, QIAN_PHYSICS_CONFIG, SCENE_HEIGHT, SCENE_WIDTH } from './const';
 import createQian from './gameObjects/qian';
 import { Physics, PhysicsSystem, PhysicsType } from '@eva/plugin-matterjs';
 import Progress from './components/Progress';
@@ -20,12 +20,13 @@ import createHP from './gameObjects/myHP';
 import Attack from './components/Attack';
 import event from './event';
 import { makeHorizental } from './utils';
+import { Joystick, JOYSTICK_EVENT } from 'eva-plugin-joystick';
 
 resource.addResource(resources);
 const canvas = document.querySelector('#canvas')
 
 var orientation = (screen.orientation || {}).type || screen.mozOrientation || screen.msOrientation;
-console.log(orientation,123123123)
+console.log(orientation, 123123123)
 if (orientation === 'portrait-primary') {
   makeHorizental(canvas)
 }
@@ -74,7 +75,7 @@ graphics.graphics.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT)
 graphics.graphics.endFill()
 let i = 0
 const evt = game.scene.addComponent(new Event())
-evt.on('tap', ()=>{
+evt.on('tap', () => {
   if (!i) {
     document.documentElement.requestFullscreen()
     i++
@@ -107,6 +108,7 @@ const box = new GameObject('box', {
     y: 0.5
   }
 })
+// box.addComponent(new Img({ resource: 'qian' }))
 box.addComponent(new Physics({
   type: PhysicsType.RECTANGLE,
   bodyOptions: {
@@ -121,6 +123,7 @@ box.addComponent(new Physics({
     isStatic: true,
   },
 }))
+
 
 game.scene.addChild(box)
 
@@ -211,3 +214,34 @@ function attack(data: AttackMsgStruct) {
     location.reload()
   }
 }
+
+
+
+const leftJsGo = new GameObject('Joystrick')
+const joystick = leftJsGo.addComponent(new Joystick({
+  boxImageResource: 'box',
+  btnImageResource: 'btn',
+  followPointer: {
+    open: true,
+    area: {
+      x: 0, y: 0,
+      width: GAME_WIDTH / 2,
+      height: GAME_HEIGHT
+    }
+  }
+}))
+game.scene.addChild(leftJsGo)
+
+joystick.on(JOYSTICK_EVENT.Begin, (e) => {
+  console.log('begin', e)
+})
+joystick.on(JOYSTICK_EVENT.Drag, (e) => {
+  const dt = e.updateParams.deltaTime
+  bow.transform.position.x += e.x * dt * MOVE_SPEED
+  bow.transform.position.y += e.y * dt * MOVE_SPEED
+})
+joystick.on(JOYSTICK_EVENT.End, (e) => {
+  console.log('end', e)
+})
+
+

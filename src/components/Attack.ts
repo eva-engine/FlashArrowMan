@@ -1,7 +1,8 @@
 import { Component, GameObject } from "@eva/eva.js"
 import { Physics, PhysicsType } from "@eva/plugin-matterjs"
 import { Event } from "@eva/plugin-renderer-event"
-import { QIAN_PHYSICS_CONFIG } from "../const"
+import { Joystick, JOYSTICK_EVENT } from "eva-plugin-joystick"
+import { GAME_HEIGHT, GAME_WIDTH, QIAN_PHYSICS_CONFIG } from "../const"
 import createQian from "../gameObjects/qian"
 import { sendEmitQian } from "../socketUtil"
 import BowString from "./BowString"
@@ -30,6 +31,8 @@ export default class Attack extends Component {
   private myHPText: HPText
   private string: BowString
   private player: Player
+  private joystick: Joystick
+  private boxPhysics: Physics
 
   init({ box, evt, progress, string, myHPText }: IProps) {
     this.box = box
@@ -38,10 +41,6 @@ export default class Attack extends Component {
     this.string = string
     this.myHPText = myHPText
     this.player = this.gameObject.getComponent(Player)
-    this.evt.on('touchstart', (e) => this.touchstart(e))
-    this.evt.on('touchmove', (e) => this.touchmove(e))
-    this.evt.on('touchend', () => this.touchend())
-    this.evt.on('touchendoutside', () => this.touchend())
     this.progress.on('qianReady', () => {
       console.log('qianReady')
       const y = Math.cos(this.gameObject.transform.rotation) * -7
@@ -49,7 +48,8 @@ export default class Attack extends Component {
       this.createQian({ rotation: this.gameObject.transform.rotation, position: { x, y } })
     })
 
-    this.box.getComponent(Physics).on('collisionStart', (x) => {
+    this.boxPhysics = this.box.getComponent(Physics)
+    this.boxPhysics.on('collisionStart', (x) => {
       console.log(x)
       x.destroy()
       const player = this.gameObject.getComponent(Player)
@@ -58,78 +58,79 @@ export default class Attack extends Component {
     })
 
     this.myHPText.setHP('HP：' + this.player.hp)
+
+
+    const rightJsGo = new GameObject('Joystrick')
+    this.joystick = rightJsGo.addComponent(new Joystick({
+      boxImageResource: 'box',
+      btnImageResource: 'btn',
+      followPointer: {
+        open: true,
+        area: {
+          x: GAME_WIDTH / 2, y: 0,
+          width: GAME_WIDTH / 2,
+          height: GAME_HEIGHT
+        }
+      }
+    }))
+
+
+
+    this.joystick.on(JOYSTICK_EVENT.Begin, (e) => {
+      this.onBegin()
+    })
+    this.joystick.on(JOYSTICK_EVENT.Drag, (e) => {
+      this.onDrag(e)
+    })
+    this.joystick.on(JOYSTICK_EVENT.End, (e) => {
+      this.onEnd()
+    })
+
+    this.gameObject.scene.addChild(rightJsGo)
+
+
   }
   awake() {
     // this.createQian({ x: 0, y: -7 })
   }
 
-  touchstart(e) {
-    console.log(e.data.position,9999)
-    if (this.progress.canBow()) {
-      this.progress.bow()
-      // 放置弓箭
-      this.gameObject.transform.position.x = e.data.position.x
-      this.gameObject.transform.position.y = e.data.position.y
-
-      this.box.transform.position.x = e.data.position.x
-      this.box.transform.position.y = e.data.position.y
-
-
-      // 记录起始位置
-      this.startQian.x = e.data.position.x
-      this.startQian.y = e.data.position.y
-      this.startPos = e.data.position
-    }
+  onBegin() {
     if (this.progress.canQian()) {
       this.doing = true
     }
   }
-  touchmove(e) {
+  onDrag(e) {
     if (!this.doing) return
-    const dx = e.data.position.x - this.startPos.x
-    const dy = e.data.position.y - this.startPos.y
-    if (dy < 0) return
-    const r = Math.atan(dy / dx)
-    if (Math.abs(r) < 20 / 180 * Math.PI) return
-    let tmp = Math.PI / 2 - Math.abs(r)
-    tmp = r < 0 ? tmp : -tmp
-    this.go.transform.rotation = tmp
+    let tmp = Math.atan(e.y / e.x)
+    if (e.x < 0) {
+      tmp = tmp + Math.PI / 2
+    } else {
+      tmp = tmp - Math.PI / 2
+    }
     this.gameObject.transform.rotation = tmp
 
-    const pow2 = dx ** 2 + dy ** 2
-    let tx = dx, ty = dy
-    const c = 583000
-    if (pow2 > c) {
-      const a = Math.sqrt(c / pow2)
-      tx = a * tx
-      ty = a * ty
-    }
 
-    this.force = Math.sqrt(tx ** 2 + ty ** 2)
-
-    const bx = 20 * Math.sqrt(1 / (tx ** 2 + ty ** 2)) * tx
-    const by = bx / tx * ty
-    // const bx = 0
-    // const by = 0
-    // console.log(tx, ty)
-
-    this.go.transform.position.x = this.startPos.x + tx * 0.3 - bx
-    this.go.transform.position.y = this.startPos.y + ty * 0.3 - by
+    const force = Math.sqrt(e.x ** 2 + e.y ** 2)
+    this.string.setPercent(force * 100 + 10)
 
 
-    this.string.setPercent(this.force * 0.3 - 10)
+    this.go.transform.rotation = tmp
+    this.go.transform.position.x = this.gameObject.transform.position.x + e.x * 100
+    this.go.transform.position.y = this.gameObject.transform.position.y + e.y * 100
+
+    this.force = force
   }
-  touchend() {
+  onEnd() {
+    this.string.setPercent(0)
     if (!this.doing) return
-    console.log(this.force, 'force')
-    const speed2 = (0.007 + this.force / 18000) / 10 // 这是力
+
+    const speed2 = this.force * 0.003 // 这是力
     const r = Math.tan(this.go.transform.rotation + Math.PI / 2)
     let x = Math.sqrt(speed2 / (1 + r ** 2))
     x = r > 0 ? -x : x
     let y = r * x
     console.log(x, y)
-    // x =0
-    // y=-0.2
+
     this.go.addComponent(new Physics({
       type: PhysicsType.RECTANGLE,
       bodyOptions: {
@@ -145,17 +146,17 @@ export default class Attack extends Component {
       stopRotation: true,
     }))
     this.progress.qian()
-    this.progress.bow()
-    this.doing = false
-    this.string.setPercent(0)
-    console.log({ x, y }, 1)
+
     sendEmitQian({ position: this.go.transform.position, force: { x, y }, rotation: this.go.transform.rotation })
     let go1 = this.go
+    this.go = undefined
     setTimeout(() => {
       try {
         go1.destroy()
       } catch (e) { }
     }, 3000)
+
+    this.doing = false
   }
   createQian({ position = { x: 0, y: 0 }, rotation = 0 }) {
     this.go = createQian({
@@ -165,4 +166,19 @@ export default class Attack extends Component {
     this.go.transform.rotation = rotation
     this.gameObject.scene.addChild(this.go)
   }
+  update() {
+    if (!this.doing && this.go) {
+      this.go.transform.position.x = this.gameObject.transform.position.x
+      this.go.transform.position.y = this.gameObject.transform.position.y - 10
+    }
+    if (this.boxPhysics.body) {
+      // @ts-ignore
+      this.boxPhysics.Body.setPosition(this.boxPhysics.body, {x: this.gameObject.transform.position.x,y:this.gameObject.transform.position.y})
+    }
+  }
 }
+
+
+
+
+

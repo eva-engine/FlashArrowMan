@@ -33,7 +33,7 @@ export default class Progress extends Component {
       }
     }))
     this.qianGraphics = front.addComponent(new Graphics())
-    this.bowGraphics = bow.addComponent(new Graphics())
+    // this.bowGraphics = bow.addComponent(new Graphics())
 
     this.backGraphics.graphics.lineStyle(10, this.background)
     this.backGraphics.graphics.arc(0, 0, 40, 0, Math.PI * 2)
@@ -50,7 +50,7 @@ export default class Progress extends Component {
   }
   update() {
     this.updateQian()
-    this.updateBow()
+    // this.updateBow()
   }
   updateQian() {
     if (this.qianStop) return
