@@ -3,8 +3,8 @@ import { Physics, PhysicsType } from "@eva/plugin-matterjs"
 import { Event } from "@eva/plugin-renderer-event"
 import { Joystick, JOYSTICK_EVENT } from "eva-plugin-joystick"
 import { GAME_HEIGHT, GAME_WIDTH, QIAN_PHYSICS_CONFIG } from "../const"
-import createQian from "../gameObjects/qian"
-import { sendEmitQian } from "../socketUtil"
+import createArrow from "../gameObjects/arrow"
+import { sendEmitArrow } from "../socketUtil"
 import BowString from "./BowString"
 import HPText from "./HPText"
 import Player from "./Player"
@@ -22,7 +22,7 @@ export default class Attack extends Component {
 
   private go: GameObject
   private startPos: { x: number, y: number }
-  private startQian = { x: 0, y: 0 }
+  private startArrow = { x: 0, y: 0 }
   private force: number
   private doing: boolean = false
   private evt: Event
@@ -41,11 +41,11 @@ export default class Attack extends Component {
     this.string = string
     this.myHPText = myHPText
     this.player = this.gameObject.getComponent(Player)
-    this.progress.on('qianReady', () => {
-      console.log('qianReady')
+    this.progress.on('arrowReady', () => {
+      console.log('arrowReady')
       const y = Math.cos(this.gameObject.transform.rotation) * -7
       const x = Math.sin(this.gameObject.transform.rotation) * 7
-      this.createQian({ rotation: this.gameObject.transform.rotation, position: { x, y } })
+      this.createArrow({ rotation: this.gameObject.transform.rotation, position: { x, y } })
     })
 
     this.boxPhysics = this.box.getComponent(Physics)
@@ -60,7 +60,12 @@ export default class Attack extends Component {
     this.myHPText.setHP('HP：' + this.player.hp)
 
 
-    const rightJsGo = new GameObject('Joystrick')
+    const rightJsGo = new GameObject('Joystrick', {
+      position: {
+        x: 1300,
+        y: 670
+      }
+    })
     this.joystick = rightJsGo.addComponent(new Joystick({
       boxImageResource: 'box',
       btnImageResource: 'btn',
@@ -91,11 +96,11 @@ export default class Attack extends Component {
 
   }
   awake() {
-    // this.createQian({ x: 0, y: -7 })
+    // this.createArrow({ x: 0, y: -7 })
   }
 
   onBegin() {
-    if (this.progress.canQian()) {
+    if (this.progress.canArrow()) {
       this.doing = true
     }
   }
@@ -111,12 +116,12 @@ export default class Attack extends Component {
 
 
     const force = Math.sqrt(e.x ** 2 + e.y ** 2)
-    this.string.setPercent(force * 100 + 10)
+    this.string.setPercent(force * 100)
 
 
     this.go.transform.rotation = tmp
-    this.go.transform.position.x = this.gameObject.transform.position.x + e.x * 100
-    this.go.transform.position.y = this.gameObject.transform.position.y + e.y * 100
+    this.go.transform.position.x = this.gameObject.transform.position.x + e.x * 40 
+    this.go.transform.position.y = this.gameObject.transform.position.y + e.y *40
 
     this.force = force
   }
@@ -124,7 +129,7 @@ export default class Attack extends Component {
     this.string.setPercent(0)
     if (!this.doing) return
 
-    const speed2 = this.force * 0.003 // 这是力
+    const speed2 = this.force * 0.6 // 这是力
     const r = Math.tan(this.go.transform.rotation + Math.PI / 2)
     let x = Math.sqrt(speed2 / (1 + r ** 2))
     x = r > 0 ? -x : x
@@ -145,9 +150,9 @@ export default class Attack extends Component {
       },
       stopRotation: true,
     }))
-    this.progress.qian()
+    this.progress.arrow()
 
-    sendEmitQian({ position: this.go.transform.position, force: { x, y }, rotation: this.go.transform.rotation })
+    sendEmitArrow({ position: this.go.transform.position, force: { x, y }, rotation: this.go.transform.rotation })
     let go1 = this.go
     this.go = undefined
     setTimeout(() => {
@@ -158,8 +163,8 @@ export default class Attack extends Component {
 
     this.doing = false
   }
-  createQian({ position = { x: 0, y: 0 }, rotation = 0 }) {
-    this.go = createQian({
+  createArrow({ position = { x: 0, y: 0 }, rotation = 0 }) {
+    this.go = createArrow({
       x: position.x + this.gameObject.transform.position.x,
       y: position.y + this.gameObject.transform.position.y
     })
@@ -167,13 +172,27 @@ export default class Attack extends Component {
     this.gameObject.scene.addChild(this.go)
   }
   update() {
+    const position = this.gameObject.transform.position
+    const { x, y } = position
+    if (x < 100) {
+      position.x = 100
+    }
+    if (y < 12) {
+      position.y = 12
+    }
+    if (x > GAME_WIDTH - 100) {
+      position.x = GAME_WIDTH - 100
+    }
+    if (y > GAME_HEIGHT - 32) {
+      position.y = GAME_HEIGHT - 32
+    }
     if (!this.doing && this.go) {
-      this.go.transform.position.x = this.gameObject.transform.position.x
-      this.go.transform.position.y = this.gameObject.transform.position.y - 10
+      this.go.transform.position.x = this.gameObject.transform.position.x + 40 * Math.sin(this.go.transform.rotation)
+      this.go.transform.position.y = this.gameObject.transform.position.y - 40 * Math.cos(this.go.transform.rotation)
     }
     if (this.boxPhysics.body) {
       // @ts-ignore
-      this.boxPhysics.Body.setPosition(this.boxPhysics.body, {x: this.gameObject.transform.position.x,y:this.gameObject.transform.position.y})
+      this.boxPhysics.Body.setPosition(this.boxPhysics.body, { x: this.gameObject.transform.position.x, y: this.gameObject.transform.position.y })
     }
   }
 }

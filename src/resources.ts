@@ -1,12 +1,12 @@
 import { RESOURCE_TYPE } from '@eva/eva.js';
 export default [
   {
-    name: 'qian',
+    name: 'arrow',
     type: RESOURCE_TYPE.IMAGE,
     src: {
       image: {
         type: 'png',
-        url: './statics/qian.png',
+        url: './statics/arrow.png',
       },
     },
     preload: true,
@@ -43,6 +43,18 @@ export default [
         type: 'png',
         url:
           './statics/box.png',
+      },
+    },
+    preload: true,
+  },
+  { 
+    name: 'background',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url:
+          './statics/background.jpg',
       },
     },
     preload: true,

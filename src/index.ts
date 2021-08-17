@@ -10,7 +10,7 @@ import { TransitionSystem } from '@eva/plugin-transition';
 import { Graphics, GraphicsSystem } from '@eva/plugin-renderer-graphics';
 import { TextSystem } from '@eva/plugin-renderer-text';
 import { GAME_HEIGHT, GAME_WIDTH, MOVE_SPEED, QIAN_PHYSICS_CONFIG, SCENE_HEIGHT, SCENE_WIDTH } from './const';
-import createQian from './gameObjects/qian';
+import createArrow from './gameObjects/arrow';
 import { Physics, PhysicsSystem, PhysicsType } from '@eva/plugin-matterjs';
 import Progress from './components/Progress';
 import BowString from './components/BowString';
@@ -21,6 +21,7 @@ import Attack from './components/Attack';
 import event from './event';
 import { makeHorizental } from './utils';
 import { Joystick, JOYSTICK_EVENT } from 'eva-plugin-joystick';
+import { TilingSprite, TilingSpriteSystem } from '@eva/plugin-renderer-tiling-sprite';
 
 resource.addResource(resources);
 const canvas = document.querySelector('#canvas')
@@ -57,7 +58,8 @@ const game = new Game({
           y: 0, // gravity
         },
       },
-    })
+    }),
+    new TilingSpriteSystem()
   ],
 });
 
@@ -69,10 +71,13 @@ game.scene.transform.size.height = GAME_HEIGHT;
 // game.scene.transform.rotation = Math.PI / 2
 // game.scene.transform.position.x = GAME_WIDTH
 
-const graphics = game.scene.addComponent(new Graphics())
-graphics.graphics.beginFill(0x666666, 1)
-graphics.graphics.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT)
-graphics.graphics.endFill()
+// const graphics = game.scene.addComponent(new Graphics())
+// graphics.graphics.beginFill(0x666666, 1)
+// graphics.graphics.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT)
+// graphics.graphics.endFill()
+game.scene.addComponent(new Img({
+  resource: 'background',
+}))
 let i = 0
 const evt = game.scene.addComponent(new Event())
 evt.on('tap', () => {
@@ -108,7 +113,7 @@ const box = new GameObject('box', {
     y: 0.5
   }
 })
-// box.addComponent(new Img({ resource: 'qian' }))
+// box.addComponent(new Img({ resource: 'arrow' }))
 box.addComponent(new Physics({
   type: PhysicsType.RECTANGLE,
   bodyOptions: {
@@ -179,7 +184,7 @@ function emit(data: EmitMsgStruct) {
 
   console.log(force, 2)
 
-  let enemy = createQian({ x, y })
+  let enemy = createArrow({ x, y })
   enemy.transform.rotation = rotation + Math.PI
 
   enemy.addComponent(new Physics({
@@ -217,7 +222,12 @@ function attack(data: AttackMsgStruct) {
 
 
 
-const leftJsGo = new GameObject('Joystrick')
+const leftJsGo = new GameObject('Joystrick', {
+  position: {
+    x: 300,
+    y: 670
+  }
+})
 const joystick = leftJsGo.addComponent(new Joystick({
   boxImageResource: 'box',
   btnImageResource: 'btn',

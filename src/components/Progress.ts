@@ -5,17 +5,17 @@ import { BOW_CD, QIAN_CD } from "../const";
 export default class Progress extends Component {
 
   private bowStartTime: number = 0
-  private qianStartTime: number = 0
+  private arrowStartTime: number = 0
 
   static componentName = 'Progress'
   public background: number = 0xeeeeee;
-  public qianColor: number = 0x9896FF;
+  public arrowColor: number = 0x9896FF;
   public bowColor: number = 0x4C41DC;
   private backGraphics: Graphics;
-  private qianGraphics: Graphics;
+  private arrowGraphics: Graphics;
   private bowGraphics: Graphics;
 
-  private qianStop = false
+  private arrowStop = false
   private bowStop = false
 
   init() {
@@ -32,16 +32,16 @@ export default class Progress extends Component {
         height: 100
       }
     }))
-    this.qianGraphics = front.addComponent(new Graphics())
+    this.arrowGraphics = front.addComponent(new Graphics())
     // this.bowGraphics = bow.addComponent(new Graphics())
 
     this.backGraphics.graphics.lineStyle(10, this.background)
     this.backGraphics.graphics.arc(0, 0, 40, 0, Math.PI * 2)
   }
-  setQianProgress(progress: number) {
-    this.qianGraphics.graphics.clear()
-    this.qianGraphics.graphics.lineStyle(10, this.qianColor)
-    this.qianGraphics.graphics.arc(0, 0, 40, 0, Math.PI * 2 * progress)
+  setArrowProgress(progress: number) {
+    this.arrowGraphics.graphics.clear()
+    this.arrowGraphics.graphics.lineStyle(10, this.arrowColor)
+    this.arrowGraphics.graphics.arc(0, 0, 40, 0, Math.PI * 2 * progress)
   }
   setBowProgress(progress: number) {
     this.bowGraphics.graphics.clear()
@@ -49,18 +49,18 @@ export default class Progress extends Component {
     this.bowGraphics.graphics.arc(0, 0, 40, 0, Math.PI * 2 * progress)
   }
   update() {
-    this.updateQian()
+    this.updateArrow()
     // this.updateBow()
   }
-  updateQian() {
-    if (this.qianStop) return
-    let p = (Date.now() - this.qianStartTime) / QIAN_CD
+  updateArrow() {
+    if (this.arrowStop) return
+    let p = (Date.now() - this.arrowStartTime) / QIAN_CD
     p = p > 1 ? 1 : p
     if (p === 1) {
-      this.qianStop = true
-      this.emit('qianReady')
+      this.arrowStop = true
+      this.emit('arrowReady')
     }
-    this.setQianProgress(p)
+    this.setArrowProgress(p)
   }
   updateBow() {
     if (this.bowStop) return
@@ -76,16 +76,16 @@ export default class Progress extends Component {
   canBow() {
     return Date.now() - this.bowStartTime > BOW_CD
   }
-  canQian() {
-    return Date.now() - this.qianStartTime > QIAN_CD
+  canArrow() {
+    return Date.now() - this.arrowStartTime > QIAN_CD
   }
 
   bow() {
     this.bowStartTime = Date.now()
     this.bowStop = false
   }
-  qian() {
-    this.qianStartTime = Date.now()
-    this.qianStop = false
+  arrow() {
+    this.arrowStartTime = Date.now()
+    this.arrowStop = false
   }
 }

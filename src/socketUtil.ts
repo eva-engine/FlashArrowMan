@@ -74,7 +74,7 @@ export function goInRoom() {
 
 }
 
-export function sendEmitQian(data: Omit<EmitDataStruct, 'type'>) {
+export function sendEmitArrow(data: Omit<EmitDataStruct, 'type'>) {
   console.log('send', data)
   ws.send(JSON.stringify({
     type: 'turn',
