@@ -174,7 +174,7 @@
     <div class="input-area">
       <input type="number" id="roomNumber" placeholder="请输入数字房间号">
     </div>
-    <div class="btn" id="entry">进入</div>
+    <div class="btn" id="entry">加载中...</div>
   </div>
   <div class="container">
     <canvas id="canvas" style="width: 100%"></canvas>
@@ -187,7 +187,13 @@
         frameborder="0" scrolling="0" width="70px" height="20px"></iframe>
     </div>
     <script src="//cdn.bootcdn.net/ajax/libs/eventemitter3/3.1.2/index.min.js"></script>
-    <script src="./main.js"></script>
+    <script>
+      function loaded () {
+        document.querySelector('#entry').innerHTML = '进入'
+      }
+    </script>
+    <script src="./main.js" onload="loaded()"></script>
+ 
   </div>
 </body>
 
