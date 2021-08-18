@@ -25,6 +25,7 @@ import { TilingSprite, TilingSpriteSystem } from '@eva/plugin-renderer-tiling-sp
 import { goin, userInfo } from './socketUtil';
 
 resource.addResource(resources);
+resource.preload()
 const canvas = document.querySelector('#canvas')
 
 var orientation = (screen.orientation || {}).type || screen.mozOrientation || screen.msOrientation;
