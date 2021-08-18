@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>我的很大，你忍一下</title>
+  <title>还没有命名</title>
   <style>
     * {
       margin: 0;
@@ -56,6 +56,7 @@
         transform: rotate(90deg);
         transform-origin: 50vw;
       }
+
       .tip {
         color: red;
       }
@@ -67,15 +68,114 @@
         width: 100vw;
         height: 100vh;
       }
+
       .tip {
-      font-size: 3.88vh;
-      color: blue;
+        font-size: 3.88vh;
+        color: blue;
+      }
+    }
+
+    .login {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      flex-direction: column;
+    }
+
+    .input-area {
+      width: 70vw;
+      height: 10vw;
+      background: #fff;
+      border: 0.1333vw solid greenyellow;
+    }
+
+    .input-area input {
+      display: block;
+      width: 68vw;
+      height: 10vw;
+      border: 0;
+      padding: 0;
+      outline: none;
+    }
+
+    .btn {
+      width: 30vw;
+      height: 8vw;
+      margin-top: 2vw;
+      background-image: url('./statics/background.jpg');
+      background-size: 100vw 216.533vw;
+      border: 0.266vw solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4vw;
+      color: #fff;
+      transition: all 1.2s;
+    }
+
+
+    .login.anim .input-area {
+      visibility: hidden;
+    }
+
+    .login.anim .btn {
+      animation: anim 3s;
+      animation-fill-mode: forwards;
+      border: 0;
+    }
+
+    .opacity {
+      background: rgba(0, 0, 0, 0)
+    }
+
+    @keyframes anim {
+      0% {
+        opacity: 1;
+        transition: rotate(0);
+      }
+
+      50% {
+        width: 30vw;
+        height: 8vw;
+        opacity: 1;
+        transform: rotate(90deg);
+        color: #fff;
+      }
+
+      80% {
+        width: 100vh;
+        height: 100vw;
+        transform: rotate(90deg);
+        opacity: 1;
+        color: transparent;
+      }
+
+      100% {
+        opacity: 0;
+        width: 100vh;
+        height: 100vw;
+        transform: rotate(90deg);
+        margin-bottom: 12vw;
+        color: transparent;
       }
     }
   </style>
 </head>
 
 <body>
+  <div class="login">
+    <div class="input-area">
+      <input type="number" id="roomNumber" placeholder="请输入数字房间号">
+    </div>
+    <div class="btn" id="entry">进入</div>
+  </div>
   <div class="container">
     <canvas id="canvas" style="width: 100%"></canvas>
     <!-- <div class="tip">
