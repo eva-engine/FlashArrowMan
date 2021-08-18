@@ -7,14 +7,14 @@ import { Event, EventSystem } from '@eva/plugin-renderer-event';
 import { SpriteAnimationSystem } from '@eva/plugin-renderer-sprite-animation';
 import { RenderSystem } from '@eva/plugin-renderer-render';
 import { TransitionSystem } from '@eva/plugin-transition';
-import { Graphics, GraphicsSystem } from '@eva/plugin-renderer-graphics';
+import { GraphicsSystem } from '@eva/plugin-renderer-graphics';
 import { TextSystem } from '@eva/plugin-renderer-text';
 import { GAME_HEIGHT, GAME_WIDTH, MOVE_SPEED, QIAN_PHYSICS_CONFIG, SCENE_HEIGHT, SCENE_WIDTH } from './const';
 import createArrow from './gameObjects/arrow';
 import { Physics, PhysicsSystem, PhysicsType } from '@eva/plugin-matterjs';
 import Progress from './components/Progress';
 import BowString from './components/BowString';
-import { AttackMsgStruct, EmitMsgStruct, TurnType } from './type';
+import { AttackMsgStruct, EmitMsgStruct, HomeMsgStruct, TurnType } from './type';
 import Player from './components/Player';
 import createHP from './gameObjects/myHP';
 import Attack from './components/Attack';
@@ -22,6 +22,7 @@ import event from './event';
 import { makeHorizental } from './utils';
 import { Joystick, JOYSTICK_EVENT } from 'eva-plugin-joystick';
 import { TilingSprite, TilingSpriteSystem } from '@eva/plugin-renderer-tiling-sprite';
+import { goin, userInfo } from './socketUtil';
 
 resource.addResource(resources);
 const canvas = document.querySelector('#canvas')
@@ -92,7 +93,7 @@ let bow = new GameObject('bow', {
     width: 200,
     height: 44,
   },
-  position: { x: 375, y: 470 },
+  position: { x: 812, y: 470 },
   origin: { x: 0.5, y: 12 / 44 }
 })
 
@@ -254,4 +255,32 @@ joystick.on(JOYSTICK_EVENT.End, (e) => {
   console.log('end', e)
 })
 
+document.body.querySelector('#entry').addEventListener('click', () => {
+  const value = (document.body.querySelector('#roomNumber') as HTMLInputElement).value as string;
+  if (!value) return
+  const number = Number(value) 
+  if (number) {
+    goin('root' + number)
+    event.once('onHome', (data: HomeMsgStruct) => {
+      if (data.data.users.some(({id})=>id === userInfo.id)) {
+        doStart()
+      }
+    })
+  }
+})
 
+
+function doStart () {
+  document.body.querySelector('#entry').innerHTML = '旋转手机'
+  const login = document.body.querySelector('.login')
+  login.classList.add('anim')
+  setTimeout(() => {
+    login.classList.add('hide')
+  }, 1200)
+  setTimeout(()=>{
+    login.classList.add('opacity')
+  }, 2400)
+  setTimeout(()=>{
+    login.remove()
+  }, 3000)
+}

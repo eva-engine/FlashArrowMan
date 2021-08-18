@@ -3,16 +3,21 @@ import { AttackDataStruct, AttackMsgStruct, EmitDataStruct, EmitMsgStruct, HomeM
 
 let ws: WebSocket
 
+let token: string
+
 export const userInfo: { id: number } = {
   id: -1
 }
 
+
 export function goin(token: string) {
   console.log('进入房间 ', token)
+  token = token
   ws.send(JSON.stringify({
     type: 'in',
     data: {
       token,
+      maxSize: 2
     }
   }))
 }
@@ -25,20 +30,12 @@ export function goout() {
     }
   }))
 }
-let index = 0
-let goinSuccess = false
 event.on('onHome', (data: HomeMsgStruct) => {
-  if (goinSuccess) {
-    event.emit('sendEveryOneMyHP')
-    return
-  }
   if (data.data.users.length >= 3) {
     goout()
-    setTimeout(()=>{
-      goin('root' + index++)
-    }, 300)
+    alert('房间人数已满')
+    location.reload()
   } else {
-    goinSuccess = true
     event.emit('sendEveryOneMyHP')
   }
 })
@@ -48,7 +45,9 @@ export function goInRoom() {
 
   ws.onopen = (r) => {
     console.log('open', r)
-    goin('room' + index++)
+    if (token !== undefined) {
+      goin(token)
+    }
   }
 
   ws.onmessage = ({ data: message }) => {
@@ -109,6 +108,4 @@ export function home(data: HomeMsgStruct) {
   event.emit('onHome', data)
 }
 
-
 goInRoom()
-
