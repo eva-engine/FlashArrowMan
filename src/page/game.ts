@@ -8,7 +8,7 @@ import { AttackMsgStruct, EmitMsgStruct, MoveMsgStruct, UnionTurnStruct } from '
 import Player from '../components/Player';
 import createHP from '../gameObjects/myHP';
 import Attack from '../components/Attack';
-import { Component, GameObject, Scene } from "@eva/eva.js";
+import { Component, GameObject } from "@eva/eva.js";
 import { Joystick, JOYSTICK_EVENT } from 'eva-plugin-joystick';
 import { Img } from '@eva/plugin-renderer-img';
 import { game, appEvt } from '../';

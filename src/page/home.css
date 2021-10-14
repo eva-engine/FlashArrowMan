@@ -1,4 +1,13 @@
-.home-item,.rank-item {
+#unameBtn {
+  float: right;
+  margin-right: 1em;
+  color: #2b2d42;
+  font-weight: bold;
+  text-indent: 0;
+  padding: 0 .5em;
+}
+
+.home-item, .rank-item {
   display: flex;
   justify-content: space-between;
   padding: .35em 1em;

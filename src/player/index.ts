@@ -24,7 +24,17 @@ class Player {
         this.active = true;
         this.name = name;
         this.time = time;
-        (document.querySelector('#countBoard') as HTMLDivElement).innerText = `房间数:${homeCount}, 玩家数:${userCount}`
+        (document.querySelector('#countBoard') as HTMLDivElement).innerText = `房间数:${homeCount}, 玩家数:${userCount}`;
+        const nameDom = document.createElement('div');
+        nameDom.id = 'unameBtn';
+        nameDom.innerText = name;
+        nameDom.addEventListener('click', async () => {
+          console.log('功能未实现');
+          // const newName = prompt('输入希望修改后的昵称');
+          // if (!newName) return;
+          // @TODO
+        });
+        (document.querySelector('#countBoard') as HTMLDivElement).appendChild(nameDom);
         resolve(true);
       })
     })

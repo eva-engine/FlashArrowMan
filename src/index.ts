@@ -13,7 +13,6 @@ import { GAME_HEIGHT, GAME_WIDTH } from './const';
 import { PhysicsSystem } from '@eva/plugin-matterjs';
 import { makeHorizental } from './utils';
 import { TilingSpriteSystem } from '@eva/plugin-renderer-tiling-sprite';
-// import { goin, userInfo } from './socketUtil';
 import { netPlayer } from './player';
 import { initHole, renderHole } from './page/home';
 
