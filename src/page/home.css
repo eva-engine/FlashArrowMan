@@ -1,0 +1,21 @@
+.home-item,.rank-item {
+  display: flex;
+  justify-content: space-between;
+  padding: .35em 1em;
+  border-radius: .25em;
+  font-size: 3vw;
+  background-color: cornflowerblue;
+  margin-bottom: .75em;
+}
+
+.home-item:nth-child(1), .rank-item:nth-child(1) {
+  background-color: #89a101;
+  color: #0c2122;
+  margin-bottom: 1.5em;
+}
+
+.rank-item:nth-child(2) {
+  background-color: #1613f3;
+  color: #881;
+  margin-bottom: 1.5em;
+}

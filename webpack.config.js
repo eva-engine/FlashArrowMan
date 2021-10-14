@@ -3,6 +3,15 @@ const webpack = require('webpack')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const { ESBuildMinifyPlugin } = require('esbuild-loader')
 
+// for local ip change in every new day
+const os = require('os');
+function getLocalIp() {
+  const ifaces = os.networkInterfaces();
+  return Object.values(ifaces).find(dev => dev[1]?.address.startsWith('30.'))?.[1]?.address;
+}
+const localIp = getLocalIp() ?? '0.0.0.0';
+console.log('use dev ip address: ', localIp);
+
 /*
  * SplitChunksPlugin is enabled by default and replaced
  * deprecated CommonsChunkPlugin. It automatically identifies modules which
@@ -80,7 +89,8 @@ module.exports = {
     compress: true,
     contentBase: path.join(__dirname, 'docs'),
     allowedHosts: ['0.0.0.0'],
-    host: '0.0.0.0'
+    host: localIp,
+    open: true,
   },
 
   plugins: [
@@ -89,6 +99,10 @@ module.exports = {
       cleanStaleWebpackAssets: false,
       cleanOnceBeforeBuildPatterns: ['main.js'],
     }),
+    new webpack.DefinePlugin({
+      __DEV__: process.env.WEBPACK_DEV_SERVER ? true : false,
+      __SERVER_PATH__: process.env.WEBPACK_DEV_SERVER ? '"ws://' + localIp + ':8081"' : '"wss://www.anxyser.xyz/qianserver"'
+    })
   ],
   optimization: {
     minimizer: [

@@ -1,4 +1,4 @@
-import { Component, GameObject } from "@eva/eva.js"
+import { Component, GameObject, UpdateParams } from "@eva/eva.js"
 import { Physics, PhysicsType } from "@eva/plugin-matterjs"
 import { Event } from "@eva/plugin-renderer-event"
 import { Joystick, JOYSTICK_EVENT } from "eva-plugin-joystick"
@@ -16,33 +16,38 @@ interface IProps {
   myHPText: HPText;
   string: BowString;
 }
+interface JoystickEventParams {
+  x: number;
+  y: number;
+  updateParams: UpdateParams;
+}
 export default class Attack extends Component {
 
   static componentName = 'Attack'
 
   private go: GameObject
-  private startPos: { x: number, y: number }
-  private startArrow = { x: 0, y: 0 }
+  // private startPos: { x: number, y: number }
+  // private startArrow = { x: 0, y: 0 }
   private force: number
   private doing: boolean = false
-  private evt: Event
+  // private evt: Event
   private box: GameObject
   private progress: Progress
   private myHPText: HPText
   private string: BowString
   private player: Player
-  private joystick: Joystick
+  public joystick: Joystick
   private boxPhysics: Physics
 
-  init({ box, evt, progress, string, myHPText }: IProps) {
+  init({ box, progress, string, myHPText }: IProps) {
     this.box = box
-    this.evt = evt
+    // this.evt = evt
     this.progress = progress
     this.string = string
     this.myHPText = myHPText
     this.player = this.gameObject.getComponent(Player)
     this.progress.on('arrowReady', () => {
-      console.log('arrowReady')
+      // console.log('arrowReady')
       const y = Math.cos(this.gameObject.transform.rotation) * -7
       const x = Math.sin(this.gameObject.transform.rotation) * 7
       this.createArrow({ rotation: this.gameObject.transform.rotation, position: { x, y } })
@@ -50,8 +55,8 @@ export default class Attack extends Component {
 
     this.boxPhysics = this.box.getComponent(Physics)
     this.boxPhysics.on('collisionStart', (x) => {
-      console.log(x)
-      x.destroy()
+      // console.log(x)
+      x.destroy();
       const player = this.gameObject.getComponent(Player)
       player.onAttack(10)
       this.myHPText.setHP('HP：' + player.hp)
@@ -81,13 +86,13 @@ export default class Attack extends Component {
 
 
 
-    this.joystick.on(JOYSTICK_EVENT.Begin, (e) => {
+    this.joystick.on(JOYSTICK_EVENT.Begin, () => {
       this.onBegin()
     })
     this.joystick.on(JOYSTICK_EVENT.Drag, (e) => {
       this.onDrag(e)
     })
-    this.joystick.on(JOYSTICK_EVENT.End, (e) => {
+    this.joystick.on(JOYSTICK_EVENT.End, () => {
       this.onEnd()
     })
 
@@ -104,7 +109,7 @@ export default class Attack extends Component {
       this.doing = true
     }
   }
-  onDrag(e) {
+  onDrag(e: JoystickEventParams) {
     if (!this.doing) return
     let tmp = Math.atan(e.y / e.x)
     if (e.x < 0) {
@@ -120,8 +125,8 @@ export default class Attack extends Component {
 
 
     this.go.transform.rotation = tmp
-    this.go.transform.position.x = this.gameObject.transform.position.x + e.x * 40 
-    this.go.transform.position.y = this.gameObject.transform.position.y + e.y *40
+    this.go.transform.position.x = this.gameObject.transform.position.x + e.x * 40
+    this.go.transform.position.y = this.gameObject.transform.position.y + e.y * 40
 
     this.force = force
   }
@@ -134,7 +139,7 @@ export default class Attack extends Component {
     let x = Math.sqrt(speed2 / (1 + r ** 2))
     x = r > 0 ? -x : x
     let y = r * x
-    console.log(x, y)
+    // __DEV__ && console.log(x, y)
 
     this.go.addComponent(new Physics({
       type: PhysicsType.RECTANGLE,
@@ -152,13 +157,16 @@ export default class Attack extends Component {
     }))
     this.progress.arrow()
 
-    sendEmitArrow({ position: this.go.transform.position, force: { x, y }, rotation: this.go.transform.rotation })
+    this.emit('emit', { position: this.go.transform.position, force: { x, y }, rotation: this.go.transform.rotation });
+
     let go1 = this.go
     this.go = undefined
     setTimeout(() => {
       try {
         go1.destroy()
-      } catch (e) { }
+      } catch (e) {
+        console.error(e);
+      }
     }, 3000)
 
     this.doing = false

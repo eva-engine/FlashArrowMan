@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <meta name="viewport" content="user-scalable=no"/>
   <title>还没有命名</title>
   <style>
     * {
@@ -103,6 +104,7 @@
       border: 0;
       padding: 0;
       outline: none;
+      text-align: center;
     }
 
     .btn {
@@ -167,20 +169,129 @@
       }
     }
   </style>
+  <style>
+    .home {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #1877ef;
+      display: flex;
+      flex-direction: column;
+      z-index: 9;
+      animation: fade 1s;
+    }
+
+    @keyframes fade {
+      0% {
+        opacity: 0;
+      }
+    }
+
+    .home .head {
+      position: relative;
+      width: 100vw;
+      height: 15vw;
+      background-color: #e7e7e7;
+    }
+
+    #homeTargetItem {
+      width: 50vw;
+      height: 101%;
+      background-color: #0a56da;
+      background-image: linear-gradient(#0a56da, #1877ef);
+      border-radius: 5vw 5vw 0 0;
+      transition: .35s;
+    }
+
+    #homeTargetItem.second {
+      transform: translateX(100%);
+    }
+
+    .home .head>div {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .home .head .item {
+      float: left;
+      width: 50vw;
+      height: 100%;
+      text-align: center;
+      line-height: 15vw;
+      font-size: 6vw;
+      letter-spacing: .25em;
+    }
+
+    .home .body {
+      flex: 1;
+    }
+
+    .home .bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      height: 35vw;
+    }
+
+    .home .bottom .item {
+      display: flex;
+      width: 40%;
+      height: 80%;
+      background-color: #05fdac;
+      border-radius: 7vw;
+      align-items: center;
+      justify-content: center;
+      box-shadow: #060 3px 3px 9px;
+      font-size: 5vw;
+    }
+
+    #homeBody {
+      box-sizing: border-box;
+      padding: 4vw 2vw;
+    }
+
+    .hide {
+      display: none;
+    }
+
+    #countBoard {
+      text-indent: 1em;
+      color: #333;
+    }
+  </style>
 </head>
 
 <body>
   <div class="login">
-    <div class="input-area">
-      <input type="number" id="roomNumber" placeholder="请输入数字房间号">
+    <div class="input-area" id="nameInput">
+      <input type="text" id="roomNumber" placeholder="请输入花名（昵称）">
     </div>
     <div class="btn" id="entry">加载中...</div>
   </div>
-  <div class="container">
+  <div class="home hide">
+    <div class="head">
+      <div id="homeTargetItem"></div>
+      <div class="list">
+        <div class="item">对战</div>
+        <div class="item">排行榜</div>
+      </div>
+    </div>
+    <div id="countBoard">
+      加载中。。。
+    </div>
+    <div class="body" id="homeBody">
+
+    </div>
+    <div class="bottom">
+      <div class="item" id="enterBtn">创建房间</div>
+      <div class="item" id="fastBtn">快速对局</div>
+    </div>
+  </div>
+  <div class="container hide app-container">
     <canvas id="canvas" style="width: 100%"></canvas>
-    <!-- <div class="tip">
-      12312312322
-    </div> -->
     <div class="star">
       <iframe class="counter"
         src="https://ghbtns.com/github-btn.html?user=fanmingfei&amp;repo=qianer&amp;type=star&amp;count=true"
@@ -188,12 +299,12 @@
     </div>
     <script src="//cdn.bootcdn.net/ajax/libs/eventemitter3/3.1.2/index.min.js"></script>
     <script>
-      function loaded () {
+      function loaded() {
         document.querySelector('#entry').innerHTML = '进入'
       }
     </script>
     <script src="./main.js" onload="loaded()"></script>
- 
+
   </div>
 </body>
 

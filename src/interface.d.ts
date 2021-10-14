@@ -7,7 +7,3 @@ interface Window {
   throwBall: any;
   resetBall: any;
 }
-
-interface HTMLElement {
-  value: any;
-}

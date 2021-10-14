@@ -26,12 +26,10 @@ export const makeHorizental = (canvas: Element) => {
       l.forEach(name => {
         a[name] = event[name]
       })
-      console.log(event.clientX, event.clientY, 123999)
       //     console.log(Object.keys(a), 123)
       //     a.xxx = 123123
       if (event instanceof PointerEvent) {
         changeXY(a, event)
-        console.log(innerWidth, 123123)
       }
       //     console.log(a, 123999)
       if (event.touches) {

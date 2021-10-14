@@ -9,7 +9,6 @@ export const userInfo: { id: number } = {
   id: -1
 }
 
-
 export function goin(token: string) {
   console.log('进入房间 ', token)
   token = token
@@ -30,6 +29,11 @@ export function goout() {
     }
   }))
 }
+event.once('onHome', () => {
+  ws.send(JSON.stringify({
+    type: 'ready'
+  }))
+})
 event.on('onHome', (data: HomeMsgStruct) => {
   if (data.data.users.length >= 3) {
     goout()
@@ -41,7 +45,7 @@ event.on('onHome', (data: HomeMsgStruct) => {
 })
 
 export function goInRoom() {
-  ws = new WebSocket('wss://www.anxyser.xyz/qianserver')
+  ws = new WebSocket(`${__SERVER_PATH__}?name=aspsnd&time=0`);
 
   ws.onopen = (r) => {
     console.log('open', r)
@@ -66,9 +70,10 @@ export function goInRoom() {
     }
   }
 
-  ws.onclose = () => {
-    console.log('onClose')
-    goInRoom()
+  ws.onclose = (ev) => {
+    console.log('onClose', ev.reason);
+    // 处于业务断开连接，不要连了
+    // goInRoom()
   }
 
 }
@@ -108,4 +113,4 @@ export function home(data: HomeMsgStruct) {
   event.emit('onHome', data)
 }
 
-goInRoom()
+// goInRoom()
