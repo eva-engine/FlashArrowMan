@@ -1,4 +1,4 @@
-import { InitToBStruct, InMsgStruct, ListToSStruct, RankToSStruct } from "../socket/define";
+import { InitToBStruct, InMsgStruct, ListToSStruct, MessageStruct, RankToSStruct, WatchToBStruct, WatchToSStruct } from "../socket/define";
 import { Socket } from "../socket";
 
 class Player {
@@ -24,23 +24,28 @@ class Player {
         this.active = true;
         this.name = name;
         this.time = time;
-        (document.querySelector('#countBoard') as HTMLDivElement).innerText = `房间数:${homeCount}, 玩家数:${userCount}`;
-        const nameDom = document.createElement('div');
-        nameDom.id = 'unameBtn';
-        nameDom.innerText = name;
-        nameDom.addEventListener('click', async () => {
-          console.log('功能未实现');
-          // const newName = prompt('输入希望修改后的昵称');
-          // if (!newName) return;
-          // @TODO
-        });
-        (document.querySelector('#countBoard') as HTMLDivElement).appendChild(nameDom);
+        const countBoard = document.querySelector('#countBoard') as HTMLDivElement;
+        // 兼容大屏端
+        if (countBoard) {
+          countBoard.innerText = `房间数:${homeCount}, 玩家数:${userCount}`;
+          const nameDom = document.createElement('div');
+          nameDom.id = 'unameBtn';
+          nameDom.innerText = name;
+          nameDom.addEventListener('click', async () => {
+            console.log('功能未实现');
+            // const newName = prompt('输入希望修改后的昵称');
+            // if (!newName) return;
+            // @TODO
+          });
+          countBoard.appendChild(nameDom);
+        }
+
         resolve(true);
       })
     })
   }
   // 获取房间列表
-  wantHomeList() {
+  async wantHomeList() {
     this.socket.send<ListToSStruct>({
       type: 'list',
       data: {
@@ -48,6 +53,7 @@ class Player {
         to: 10
       }
     });
+    return this.socket.onceOrError('list');
   }
   // 加入（创建并加入）房间
   async wantJoinHome(token?: string) {
@@ -70,6 +76,20 @@ class Player {
       }
     });
     return this.socket.onceOrError('rank');
+  }
+  async want<T extends MessageStruct>(e: T) {
+    this.socket.send(e);
+    return this.socket.onceOrError(e.type);
+  }
+  // 加入观战
+  async wantWatch(token: string) {
+    return await this.want<WatchToSStruct>({
+      type: 'watch',
+      data: {
+        token,
+        join: true
+      }
+    }) as WatchToBStruct;
   }
 }
 

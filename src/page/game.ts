@@ -4,7 +4,7 @@ import createArrow from '../gameObjects/arrow';
 import { Physics, PhysicsType } from '@eva/plugin-matterjs';
 import Progress from '../components/Progress';
 import BowString from '../components/BowString';
-import { AttackMsgStruct, EmitMsgStruct, MoveMsgStruct, UnionTurnStruct } from '../socket/define.local';
+import { AttackMsgStruct, EmitMsgStruct, MoveDataStruct, MoveMsgStruct, UnionTurnStruct } from '../socket/define.local';
 import Player from '../components/Player';
 import createHP from '../gameObjects/myHP';
 import Attack from '../components/Attack';
@@ -103,17 +103,18 @@ export class SingleGame {
   }
 
   leftJsGo: GameObject
-  joystick: Joystick
-  initJoystick() {
+  leftJs: Joystick
+  initLeftJs() {
     const leftJsGo = this.leftJsGo = new GameObject('Joystrick', {
       position: {
         x: 300,
         y: 670
       }
     })
-    const joystick = this.joystick = leftJsGo.addComponent(new Joystick({
+    const joystick = this.leftJs = leftJsGo.addComponent(new Joystick({
       boxImageResource: 'box',
       btnImageResource: 'btn',
+      btnRadius: 65,
       followPointer: {
         open: true,
         area: {
@@ -133,18 +134,44 @@ export class SingleGame {
       // @TODO 移动
       this.bow.transform.position.x += e.x * dt * MOVE_SPEED
       this.bow.transform.position.y += e.y * dt * MOVE_SPEED
-      netPlayer.socket.send<MoveMsgStruct>({
-        type: 'turn',
-        data: {
-          type: 'move',
-          x: this.bow.transform.position.x,
-          y: this.bow.transform.position.y,
-        }
-      })
     })
     joystick.on(JOYSTICK_EVENT.End, (e) => {
       // __DEV__ && console.log('end', e)
     })
+  }
+  rightJs: Joystick
+  initRightJs() {
+    const rightJsGo = new GameObject('Joystrick', {
+      position: {
+        x: 1300,
+        y: 670
+      }
+    })
+    this.rightJs = rightJsGo.addComponent(new Joystick({
+      boxImageResource: 'box',
+      btnImageResource: 'btn',
+      btnRadius: 65,
+      followPointer: {
+        open: true,
+        area: {
+          x: GAME_WIDTH / 2, y: 0,
+          width: GAME_WIDTH / 2,
+          height: GAME_HEIGHT
+        }
+      }
+    }))
+
+    this.rightJs.on(JOYSTICK_EVENT.Begin, () => {
+      this.attackController.onBegin()
+    })
+    this.rightJs.on(JOYSTICK_EVENT.Drag, (e) => {
+      this.attackController.onDrag(e)
+    })
+    this.rightJs.on(JOYSTICK_EVENT.End, () => {
+      this.attackController.onEnd()
+    });
+
+    this.bow.scene.addChild(rightJsGo)
   }
 
   reloadHome(e: HomeMsgStruct) {
@@ -155,6 +182,11 @@ export class SingleGame {
 
     this.eventer.on('home', e => {
       this.reloadHome(e as HomeMsgStruct);
+    })
+
+    this.eventer.once('out', e => {
+      this.enemyHPText.setHP('敌人逃了，你赢了!');
+      this.close();
     })
 
     this.eventer.on('turn', e => {
@@ -241,7 +273,7 @@ export class SingleGame {
 
   attackController: Attack
   constructor(e: HomeMsgStruct) {
-    __DEV__ || document.documentElement.requestFullscreen();
+    // __DEV__ || document.documentElement.requestFullscreen();
 
     netPlayer.socket.registerPlayer(this.eventer);
     const { bow, box } = this;
@@ -251,8 +283,23 @@ export class SingleGame {
     this.initProgress();
     this.initHp();
     this.attackController = bow.addComponent(new Attack({ box, evt: appEvt, progress: this.progress, myHPText: this.myHPText, string: this.string }))
+    this.attackController.on('onframe', () => {
+      netPlayer.socket.send<MoveMsgStruct>({
+        type: 'turn',
+        data: {
+          type: 'move',
+          x: this.bow.transform.position.x,
+          y: this.bow.transform.position.y,
+          rotation: this.bow.transform.rotation,
+          force: this.string.percent,
+          ax: this.attackController.go?.transform.position.x,
+          ay: this.attackController.go?.transform.position.y
+        }
+      })
+    })
 
-    this.initJoystick();
+    this.initLeftJs();
+    this.initRightJs();
     this.initNetReactive();
     this.reloadHome(e);
     this.ready();
@@ -265,16 +312,17 @@ export class SingleGame {
     this.player.emit('onAttack');
   }
   close() {
-    const j1 = this.joystick;
-    const j2 = this.attackController.joystick;
+    const j1 = this.leftJs;
+    const j2 = this.rightJs;
     for (const j of [j1, j2]) {
       ((j as any).evt as Component).gameObject.destroy();
       j.gameObject.destroy();
     }
     delete this.leftJsGo;
-    delete this.joystick;
+    delete this.leftJs;
+    delete this.rightJs;
 
-    this.attackController.gameObject.removeComponent(this.attackController);
+    this.bow.removeComponent(this.attackController);
     setTimeout(() => {
       this.destroy();
     }, 2000);

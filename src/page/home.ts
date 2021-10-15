@@ -48,36 +48,34 @@ export function renderHole() {
 
 const body = document.body.querySelector('#homeBody') as HTMLDivElement;
 
-function renderHome() {
-  netPlayer.wantHomeList();
-  netPlayer.socket.once('list', async e => {
-    let data = e.data as ListToBStruct['data'];
+async function renderHome() {
+  const e = await netPlayer.wantHomeList() as ListToBStruct;
+  let data = e.data;
 
 
-    if (data.length === 0) {
-      body.innerText = '目前没有房间';
-    } else {
-      body.innerHTML = '<div class="home-item"><div class="master">房主</div><div class="count">当前人数</div></div>';
-      for (const home of data) {
-        const dom = document.createElement('div');
-        dom.className = 'home-item';
-        dom.innerHTML = `<div class="master"></div><div class="count"></div>`;
-        (<HTMLDivElement>dom.querySelector('.master')).innerText = home.masterName as unknown as string;
-        (<HTMLDivElement>dom.querySelector('.count')).innerText = home.users.length as unknown as string;
-        dom.addEventListener('click', async () => {
-          let result: HomeMsgStruct;
-          try {
-            result = await netPlayer.wantJoinHome(home.token) as HomeMsgStruct;
-            __DEV__ && console.log(result);
-          } catch (e) {
-            console.log(e);
-          }
-          result && enterGame(result);
-        });
-        body.appendChild(dom);
-      }
+  if (data.length === 0) {
+    body.innerText = '目前没有房间';
+  } else {
+    body.innerHTML = '<div class="home-item"><div class="master">房主</div><div class="count">当前人数</div></div>';
+    for (const home of data) {
+      const dom = document.createElement('div');
+      dom.className = 'home-item';
+      dom.innerHTML = `<div class="master"></div><div class="count"></div>`;
+      (<HTMLDivElement>dom.querySelector('.master')).innerText = home.masterName as unknown as string;
+      (<HTMLDivElement>dom.querySelector('.count')).innerText = home.users.length as unknown as string;
+      dom.addEventListener('click', async () => {
+        let result: HomeMsgStruct;
+        try {
+          result = await netPlayer.wantJoinHome(home.token) as HomeMsgStruct;
+          __DEV__ && console.log(result);
+        } catch (e) {
+          console.log(e);
+        }
+        result && enterGame(result);
+      });
+      body.appendChild(dom);
     }
-  })
+  }
 }
 async function renderRank() {
   const e = await netPlayer.wantRankList() as RankToBStruct;

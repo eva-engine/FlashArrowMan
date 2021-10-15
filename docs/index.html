@@ -3,7 +3,10 @@
 
 <head>
   <meta name="viewport" content="user-scalable=no" />
-  <title>还没有命名</title>
+  <title>闪箭侠</title>
+  <script>
+    window.isPlayerClient = true;
+  </script>
   <style>
     * {
       margin: 0;
@@ -227,6 +230,7 @@
 
     .home .body {
       flex: 1;
+      overflow: auto;
     }
 
     .home .bottom {
@@ -292,11 +296,6 @@
   </div>
   <div class="container hide app-container">
     <canvas id="canvas" style="width: 100%"></canvas>
-    <div class="star">
-      <iframe class="counter"
-        src="https://ghbtns.com/github-btn.html?user=fanmingfei&amp;repo=qianer&amp;type=star&amp;count=true"
-        frameborder="0" scrolling="0" width="70px" height="20px"></iframe>
-    </div>
     <script src="//cdn.bootcdn.net/ajax/libs/eventemitter3/3.1.2/index.min.js"></script>
     <script>
       function loaded() {

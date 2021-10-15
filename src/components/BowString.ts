@@ -1,9 +1,9 @@
 import { Component, GameObject } from "@eva/eva.js";
 import { Graphics } from "@eva/plugin-renderer-graphics";
 
-const DEFAULT_Y  = 34
+const DEFAULT_Y = 34
 export default class BowString extends Component {
-  private percent: number = 0;
+  public percent: number = 0;
   private leftGraphics: Graphics;
   private rightGraphics: Graphics;
 
@@ -21,7 +21,7 @@ export default class BowString extends Component {
   }
 
   setPercent(percent: number) {
-    this.percent = percent + DEFAULT_Y
+    this.percent = percent;
 
     this.leftGraphics.graphics.clear()
     this.rightGraphics.graphics.clear()
@@ -31,6 +31,6 @@ export default class BowString extends Component {
   draw(graphics: Graphics['graphics'], type: 'left' | 'right') {
     graphics.lineStyle(1, 0x000000)
     graphics.moveTo(...this.point[type])
-    graphics.lineTo(0, this.percent)
+    graphics.lineTo(0, this.percent + DEFAULT_Y);
   }
 }

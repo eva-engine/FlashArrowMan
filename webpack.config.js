@@ -32,96 +32,6 @@ console.log('use dev ip address: ', localIp);
  * https://github.com/webpack-contrib/terser-webpack-plugin
  *
  */
-// function getConfig(entry, output, html, port) {
-//   return {
-//     mode: 'development',
-//     entry,
-//     plugins: [new webpack.ProgressPlugin()],
-//     devtool: 'inline-source-map',
-//     output,
-//     module: {
-//       rules: [
-//         {
-//           test: /\.(ts|tsx)$/,
-//           loader: 'esbuild-loader',
-//           options: {
-//             loader: 'tsx',
-//             target: 'es2015',
-//           },
-//           include: [path.resolve(__dirname, 'src')],
-//           exclude: [/node_modules/],
-//         },
-//         {
-//           test: /.css$/,
-
-//           use: [
-//             {
-//               loader: 'style-loader',
-//             },
-//             {
-//               loader: 'css-loader',
-//               options: {
-//                 sourceMap: true,
-//               },
-//             },
-//             {
-//               loader: 'esbuild-loader',
-//               options: {
-//                 loader: 'css',
-//                 minify: true,
-//               },
-//             },
-//           ],
-//         },
-//       ],
-//     },
-
-//     resolve: {
-//       extensions: ['.tsx', '.ts', '.js'],
-//       fallback: { path: require.resolve('path-browserify') },
-//     },
-
-//     devServer: {
-//       port,
-//       compress: true,
-//       contentBase: path.join(__dirname, 'docs'),
-//       allowedHosts: ['0.0.0.0'],
-//       host: localIp,
-//       open: true,
-//     },
-
-//     plugins: [
-//       new CleanWebpackPlugin({
-//         root: __dirname + '/docs',
-//         cleanStaleWebpackAssets: false,
-//         cleanOnceBeforeBuildPatterns: ['main.js'],
-//       }),
-//       new webpack.DefinePlugin({
-//         __DEV__: process.env.WEBPACK_DEV_SERVER ? true : false,
-//         __SERVER_PATH__: process.env.WEBPACK_DEV_SERVER ? '"ws://' + localIp + ':8081"' : '"wss://www.anxyser.xyz/qianserver"'
-//       })
-//     ],
-//     optimization: {
-//       minimizer: [
-//         new ESBuildMinifyPlugin({
-//           css: true,
-//         }),
-//       ],
-//     },
-//   }
-
-// }
-// module.exports = [
-//   getConfig('./src/index.ts', {
-//     path: __dirname + '/docs',
-//     filename: 'main.js',
-//   }, 'index.html', 9000),
-//   getConfig('./src/watch.ts', {
-//     path: __dirname + '/docs',
-//     filename: 'watch.js',
-//   }, 'watch.html', 9001)
-// ]
-
 module.exports = {
   mode: 'development',
   entry: {
@@ -148,7 +58,6 @@ module.exports = {
       },
       {
         test: /.css$/,
-
         use: [
           {
             loader: 'style-loader',
@@ -182,14 +91,15 @@ module.exports = {
     contentBase: path.join(__dirname, 'docs'),
     allowedHosts: ['0.0.0.0'],
     open: true,
-    useLocalIp: true
+    host: localIp,
+    openPage: ['index.html', 'watch.html']
   },
 
   plugins: [
     new CleanWebpackPlugin({
       root: __dirname + '/docs',
       cleanStaleWebpackAssets: false,
-      cleanOnceBeforeBuildPatterns: ['main.js'],
+      cleanOnceBeforeBuildPatterns: ['main.js', 'watch.js'],
     }),
     new webpack.DefinePlugin({
       __DEV__: process.env.WEBPACK_DEV_SERVER ? true : false,

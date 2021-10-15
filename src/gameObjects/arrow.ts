@@ -1,8 +1,8 @@
 import { GameObject } from "@eva/eva.js";
 import { Img } from "@eva/plugin-renderer-img";
 
-export default function createArrow({ x, y }: { x: number, y: number }) {
-  const go = new GameObject('arrow', {
+export default function createArrow({ x, y }: { x: number, y: number }, name = 'arrow') {
+  const go = new GameObject(name, {
     size: {
       width: 21,
       height: 169
@@ -12,7 +12,7 @@ export default function createArrow({ x, y }: { x: number, y: number }) {
       x: x,
       y: y
     }
-  })
+  });
   go.addComponent(new Img({
     resource: 'arrow'
   }))

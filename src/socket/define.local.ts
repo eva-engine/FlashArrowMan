@@ -22,7 +22,11 @@ export type AttackDataStruct = {
 export type MoveDataStruct = {
   type: 'move',
   x: number,
-  y: number
+  y: number,
+  rotation: number,
+  force: number,
+  ax: number,
+  ay: number
 }
 
 export type AttackMsgStruct = MessageStruct<AttackDataStruct, 'turn'>
