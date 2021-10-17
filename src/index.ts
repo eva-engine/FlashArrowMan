@@ -16,15 +16,19 @@ import { TilingSpriteSystem } from '@eva/plugin-renderer-tiling-sprite';
 import { netPlayer } from './player';
 import { initHole, renderHole } from './page/home';
 
+// import VConsole from 'vconsole';
+
+// new VConsole()
+
 resource.addResource(resources);
 resource.preload()
 const canvas = document.querySelector('#canvas') as HTMLCanvasElement;
 
 var orientation = (screen.orientation || {}).type || (screen as any).mozOrientation || (screen as any).msOrientation;
 console.log(orientation, 123123123)
-if (orientation === 'portrait-primary') {
+// if (orientation === 'portrait-primary') {
   makeHorizental(canvas)
-}
+// }
 
 export const game = new Game({
   systems: [
