@@ -13,13 +13,14 @@ import { TextSystem } from '@eva/plugin-renderer-text';
 import { GAME_WIDTH } from './const';
 import { PhysicsSystem } from '@eva/plugin-matterjs';
 import { TilingSpriteSystem } from '@eva/plugin-renderer-tiling-sprite';
-import { Watcher } from './watchpage';
-
+import { Watcher } from './watchpage/watch';
+import { initWatchPage } from './watchpage';
+import React from "react";
+window.React = React;
 export const WATCH_HEIGHT = GAME_WIDTH * 1.5;
 resource.addResource(resources);
 resource.preload()
 const canvas = document.querySelector('#appCanvas') as HTMLCanvasElement;
-
 export const game = new Game({
   systems: [
     new RendererSystem({
@@ -55,4 +56,9 @@ game.scene.transform.size.height = WATCH_HEIGHT;
 game.scene.addComponent(new Img({
   resource: 'background',
 }))
-new Watcher();
+
+const watcher = new Watcher();
+(async () => {
+  await watcher.init();
+  initWatchPage();
+})()

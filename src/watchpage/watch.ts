@@ -3,16 +3,10 @@ import { netPlayer } from "../player";
 import { SingleWatchGame } from "./game";
 
 export class Watcher {
-  constructor() {
-    this.init();
-  }
+  constructor() { }
   async init() {
     const result = await netPlayer.init('qian-watcher', 15731056578);
     if (!result) alert('登录异常');
-    if (__DEV__) {
-      this.randomWatch();
-    }
-
   }
   async randomWatch() {
     const timer = setInterval(async () => {
