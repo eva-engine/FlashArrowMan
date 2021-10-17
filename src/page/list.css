@@ -1,0 +1,108 @@
+.list-container {}
+
+.list-header {
+    width: 750rpx;
+    height: 460rpx;
+    background: #77A0FF;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+}
+
+.head-pic {
+    width: 139rpx;
+    height: 145rpx;
+    background-image: url('https://gw.alicdn.com/imgextra/i3/O1CN01pyB1R71MrY3ZLzw5C_!!6000000001488-2-tps-139-145.png');
+    background-size: 139rpx 145rpx;
+    margin-top: 94rpx;
+}
+
+.game-name {
+    font-size: 48rpx;
+    margin-top: 30rpx;
+    font-weight: 800;
+}
+
+.user-info {
+    margin-top: 20rpx;
+}
+
+.username {
+    font-size: 22rpx;
+    padding-right: 20rpx;
+    border-right: 8px solid #fff;
+    margin-right: 20rpx;
+}
+
+.rank {
+    font-size: 22rpx;
+}
+
+.room-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 40rpx;
+    padding-bottom: 160rpx;
+}
+
+.room-item {
+    width: 228rpx;
+    height: 120rpx;
+    background-color: #C4D6FF;
+    color: #666666;
+    border-radius: 10rpx;
+    margin-left: 22px;
+    margin-bottom: 40px;
+    box-sizing: border-box;
+    padding: 20rpx 15rpx;
+}
+
+.room-title {
+    color: #4D4D4D;
+    font-size: 28rpx;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    word-break: keep-all;
+    font-weight: 800;
+}
+
+.people-count {
+    margin-top: 30rpx;
+    font-size: 22rpx;
+}
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    width: 750rpx;
+    position: fixed;
+    bottom: 55rpx;
+    padding: 0 36rpx;
+    box-sizing: border-box;
+    justify-content: space-around;
+}
+
+.create-room,
+.quick-enter {
+    width: 320rpx;
+    height: 94rpx;
+    color: #fff;
+    font-weight: 800;
+    font-size: 30rpx;
+    border-radius: 50rpx;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.create-room {
+    background-color: #79AE7C;
+}
+
+.quick-enter {
+    background-color: #7989FF;
+}

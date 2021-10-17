@@ -1,0 +1,208 @@
+/*
+Reset CSS
+作用：清除和重置 基础css样式
+*/
+
+/* 一、重置*/
+
+html { overflow-y: scroll; }
+/* 让非ie浏览器默认也显示垂直滚动条，防止因滚动条引起的闪烁 */
+
+body,div,p,span,a,img,
+dl,dt,dd,ul,ol,li,
+h1,h2,h3,h4,h5,h6,
+table,thead,tbody,tr,td,th{
+    padding: 0;
+    margin: 0;
+}
+
+body,
+button, input, select, textarea { /* for ie */
+    /*font: 12px/1 Tahoma, Helvetica, Arial, "宋体", sans-serif;*/
+    font: 12px/1 "微软雅黑", Tahoma, Helvetica, Arial, sans-serif; /* 用 ascii 字符表示，使得在任何编码下都无问题 */
+    background: transparent;
+}
+button, input, select, textarea {
+    font-size: 100%; /* 使得表单元素在 ie 下能继承字体大小 */
+    border: none;
+    outline: none;
+}
+
+input::-ms-input-placeholder{
+    color:#c2c2c2;
+}
+input::-webkit-input-placeholder {  /* webkit 浏览器*/
+    color:#c2c2c2;
+}
+input::-moz-placeholder { /* 火狐浏览器 */
+    color:#c2c2c2;
+}
+textarea::-ms-input-placeholder{
+    color:#c2c2c2;
+}
+textarea::-webkit-input-placeholder {  /* webkit 浏览器*/
+    color:#c2c2c2;
+}
+textarea::-moz-placeholder { /* 火狐浏览器 */
+    color:#c2c2c2;
+}
+/*  设置input placeholder 样式 */
+
+select{
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+    cursor: pointer;
+}
+select::-ms-expand { display: none; }
+/*将默认的select选择框样式清除*/
+
+
+h1,h2,h3,h4,h5,h6{ font-weight: normal;}
+
+em,i{font-style:normal;}
+
+ul,ol{list-style:none;}
+
+a{
+    text-decoration: none;
+    outline: none;
+    color: #7f7f7f;
+}
+a:visited{
+    text-decoration: none;
+    outline: none;
+}
+a:hover {
+    text-decoration: none;
+    outline: none;
+}
+a:active{
+    text-decoration: none;
+    outline: none;
+}
+a:focus{
+    text-decoration: none;
+    outline: none;
+}
+
+img { vertical-align: top;border: none; } /* 让链接里的 img 无边框  ie会出现*/
+
+label{
+    cursor: pointer;
+}
+/*  label标签鼠标移入后变为手型  */
+
+table {
+    border-collapse: collapse;   /*合并边框*/
+    border-spacing: 0;
+}
+/* 重置表格元素 */
+
+/**********************************************************/
+/* 二、常用的 class*/
+
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+.clear_fix:after{
+    content:"";
+    display: block;
+    clear: both;
+}
+/*清除浮动*/
+
+.beyond_eip{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+/*超出省略*/
+
+.beyond2_eip{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp:2;
+}
+.beyond3_eip{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp:3;
+}
+.beyond4_eip{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp:4;
+}
+/*超出多行省略*/
+
+.ofh{
+    overflow: hidden;
+}
+/*超出隐藏*/
+
+.el_hide {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+/*  隐藏元素  */
+
+.bg_cover{
+    background-position: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+/*  背景居中铺满  */
+
+.img_center{
+    display: inline-block;
+    margin: 0 auto;
+}
+/*  图片水平居中  */
+
+.sele_none{
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+/*禁止文字选中*/
+
+/*************************************************************/
+/* 三、其他*/
+
+/*
+1.网站logo
+先有一个.icon作为扩展名文件
+通过<link rel="icon" href="url路径"> 引入
+*/
+
+/*
+2.响应式布局
+@media all and (max-width:1200){}
+小于750尺寸，建议配合rem来
+    var html = document.getElementsByTagName("html")[0];
+    var w = html.getBoundingClientRect().width;
+    html.style.fontSize = deviceWidth / 20 + "px";
+    结合less 有 @rem: 37.5rem;
+    在设置css的时候  width:(750/@rem);
+    在通过 less 终端命令 lessc index.less > index.css
+    转成css文件即可
+*/

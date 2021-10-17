@@ -8,18 +8,21 @@ import { AttackMsgStruct, EmitMsgStruct, MoveDataStruct, MoveMsgStruct, UnionTur
 import Player from '../components/Player';
 import createHP from '../gameObjects/myHP';
 import Attack from '../components/Attack';
-import { Component, GameObject } from "@eva/eva.js";
+import { Component, Game, GameObject } from "@eva/eva.js";
 import { Joystick, JOYSTICK_EVENT } from 'eva-plugin-joystick';
 import { Img } from '@eva/plugin-renderer-img';
-import { game, appEvt } from '../';
 import { TempPlayer } from '../player/TempPlayer';
 import { netPlayer } from '../player';
 import { HomeMsgStruct } from 'src/socket/define';
-import HPText from 'src/components/HPText';
-
-const gamePage = document.querySelector('.app-container');
+import HPText from '../components/HPText';
+import { Event } from '@eva/plugin-renderer-event';
+import { getGame } from './gamebase';
+import event from '../event';
+let game: Game, appEvt: Event
+// const gamePage = document.querySelector('.app-container');
 export function beginGame(e: HomeMsgStruct) {
-  gamePage.classList.remove('hide');
+  // gamePage.classList.remove('hide');
+  event.emit('gameStart')
   new SingleGame(e);
 }
 // 一局游戏
@@ -273,6 +276,10 @@ export class SingleGame {
 
   attackController: Attack
   constructor(e: HomeMsgStruct) {
+
+    const { game: g, appEvt: evt } = getGame()
+    game = g
+    appEvt = evt
     // __DEV__ || document.documentElement.requestFullscreen();
 
     netPlayer.socket.registerPlayer(this.eventer);
@@ -324,6 +331,7 @@ export class SingleGame {
 
     this.bow.removeComponent(this.attackController);
     setTimeout(() => {
+      event.emit('gameOver')
       this.destroy();
     }, 2000);
   }
@@ -335,7 +343,5 @@ export class SingleGame {
       go.destroy();
     }
     netPlayer.socket.releasePlayer();
-    document.querySelector('.container').classList.add('hide');
-    document.querySelector('.home').classList.remove('hide')
   }
 }
