@@ -12,9 +12,9 @@ class Player {
   constructor() {
 
   }
-  init(name: string, time: number) {
+  init(name: string, time: number, tel: string) {
     return new Promise(resolve => {
-      this.socket = new Socket(__SERVER_PATH__ + `?name=${encodeURIComponent(name)}&time=${time}`);
+      this.socket = new Socket(__SERVER_PATH__ + `?name=${encodeURIComponent(name)}&tel=${tel}&time=${time}`);
       this.socket.ws.onclose = e => {
         // TODO
         console.log(e.reason);

@@ -17,6 +17,7 @@ import { TilingSpriteSystem } from '@eva/plugin-renderer-tiling-sprite';
 import { netPlayer } from './player';
 import { initHole, renderHole } from './page/home';
 import { createHome } from './entry'
+window.netPlayer = netPlayer
 
 window.React = React
 // import VConsole from 'vconsole';
