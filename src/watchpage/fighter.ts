@@ -83,6 +83,7 @@ export class Fighter {
     const { hp: myHP, hpText: myHPText } = createHP({ position: { y: WATCH_HEIGHT / 2 + (.5 - this.index) * 100, x: 50 } })
     this.myHPText = myHPText;
     window.game.scene.addChild(myHP);
+    console.log('initHp', this.index);
   }
   attackController: Attack
   constructor(public id: number, public name: string, public hp: number, public index: number) {
@@ -140,10 +141,11 @@ export class Fighter {
   destroy() {
     try {
       this.attackController.go?.transform.parent && this.attackController.go.destroy();
+      this.bow.destroy();
+      this.box.destroy();
+      this.myHPText.gameObject.destroy();
+      this.progress.gameObject.destroy();
     } catch { }
-    this.bow.destroy();
-    this.box.destroy();
-    this.myHPText.gameObject.destroy();
-    this.progress.gameObject.destroy();
+
   }
 }

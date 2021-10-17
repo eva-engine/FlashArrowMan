@@ -86,7 +86,7 @@ export class SingleWatchGame {
     netPlayer.socket.releasePlayer();
     this.fighter1?.destroy();
     this.fighter2?.destroy();
-    const needDestroy = window.game.scene.gameObjects.filter(go => go !== window.game.scene);
+    const needDestroy = window.game.scene.transform.children.map(({gameObject})=>gameObject)
     for (const go of needDestroy) {
       go.destroy();
     }
