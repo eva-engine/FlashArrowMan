@@ -31,7 +31,6 @@
   },
   "include": [
     "./src/**/*.ts",
-    "./src/**/index.tsx",
-    "src/page/home.tsx"
-  ],
+    "./src/**/index.tsx"
+  ]
 }

@@ -8,9 +8,9 @@ export async function initWatchPage() {
   const e = await netPlayer.wantHomeList() as ListToBStruct;
   const e2 = await netPlayer.wantRankList(0, 10) as RankToBStruct;
   render(
-    < div className="container">
+    <div className="container">
       <HomePage propHomes={e.data}></HomePage>
       <RankPage propRanks={e2.data}></RankPage>
-    </div >
+    </div>
     , document.querySelector('#react-app'));
 }

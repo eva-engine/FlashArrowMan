@@ -17,17 +17,28 @@ import { watcher, WATCH_HEIGHT } from "../../watch";
 
 export function HomePage({ propHomes = [] }: { propHomes?: ListToBStruct['data'] }) {
   const [homes, setHomes] = useState(propHomes);
-
-  const [watching, setWatching] = useState(false);
+  const [searchValue, setSearchValue] = useState()
 
   useEffect(() => {
     setTimeout(async () => {
-      const e = await netPlayer.wantHomeList() as ListToBStruct;
-      setHomes(e.data);
+      refresh()
     }, 3000);
   }, []);
+  const refresh = async () => {
+    const e = await netPlayer.wantHomeList() as ListToBStruct;
+    setHomes(e.data);
+  }
+
+  const select = (token: string) => {
+    watcher.watch(token)
+  }
+
+  const search = (e: any) => {
+    setSearchValue(e.target.value)
+  }
   useEffect(() => {
     const canvas = document.querySelector('#appCanvas') as HTMLCanvasElement;
+
 
     const game = window.game = new Game({
       systems: [
@@ -37,7 +48,7 @@ export function HomePage({ propHomes = [] }: { propHomes?: ListToBStruct['data']
           height: WATCH_HEIGHT,
           antialias: true,
           enableScroll: false,
-          resolution: window.devicePixelRatio / 2
+          resolution: window.devicePixelRatio / 2,
         }),
         new ImgSystem(),
         new TransitionSystem(),
@@ -70,13 +81,22 @@ export function HomePage({ propHomes = [] }: { propHomes?: ListToBStruct['data']
   }, [])
   return (
     <div className="homepage" >
-      {!watching ? <div className="homelist" style={{ position: 'absolute', width: '100%', height: '100%', backgroundColor: '#efefef' }}>
+      <div className="homelist">
+        <div className="list-title">
+          房间列表
+          <span className="refresh" onClick={refresh}>刷新</span>
+        </div>
+        <input type="text" className="search" onKeyUp={search} />
+
         {
-          homes.map(home => (
-            <div key={home.token}>{home.masterName}</div>
+          homes.filter(({ masterName }) => searchValue ? masterName.indexOf(searchValue) > -1 : true).map(home => (
+            <div key={home.token} className="item" onClick={() => select(home.token)}>
+              <div className="name">{home.masterName}</div>
+              <div className="count">人数：{home.users.length}</div>
+            </div>
           ))
         }
-      </div> : null}
+      </div>
       <canvas id="appCanvas"></canvas>
     </div>
   )

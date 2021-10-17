@@ -5,7 +5,7 @@ import { SingleWatchGame } from "./game";
 export class Watcher {
   constructor() { }
   async init() {
-    const result = await netPlayer.init('qian-watcher', 15731056578);
+    const result = await netPlayer.init('qian-watcher', 15731056578, '12312312312');
     if (!result) alert('登录异常');
   }
   async randomWatch() {
