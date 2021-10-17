@@ -20,7 +20,7 @@ export function HomePage({ propHomes = [] }: { propHomes?: ListToBStruct['data']
   const [searchValue, setSearchValue] = useState()
 
   useEffect(() => {
-    setTimeout(async () => {
+    setInterval(async () => {
       refresh()
     }, 3000);
   }, []);

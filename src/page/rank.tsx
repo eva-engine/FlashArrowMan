@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { netPlayer } from "../player";
 import { RankToBStruct } from "../socket/define";
+import Head from "./head";
 import "./rank.css";
 export function RankPage() {
 
@@ -12,7 +13,7 @@ export function RankPage() {
 
   useEffect(() => {
     reload();
-  })
+  }, [])
   async function reload() {
     const e = await netPlayer.wantRankList(0, 50);
     setState(e);
@@ -20,11 +21,7 @@ export function RankPage() {
 
   return <div className="rank page">
     <div className="top">
-      <div className="list">
-        <div className="item">房间</div>
-        <div className="item">排行榜</div>
-      </div>
-      <div className="hr select-right"></div>
+      <Head type="rank" />
       <div>
         <div className="rank-card">
           <div className="name">{state.data.list[0]?.name}</div>

@@ -27,6 +27,10 @@ function ReactApp() {
     event.on('gameOver', () => {
       setFighting(false)
     })
+    return () =>{
+      event.off('gameStart')
+      event.off('gameOver')
+    }
   }, [])
   const canvasStyle = {
     width: "100vh",
