@@ -22,6 +22,7 @@
     "css-loader": "^5.0.0",
     "esbuild-loader": "^2.13.1",
     "path-browserify": "^1.0.1",
+    "postcss-loader": "^6.2.0",
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^5.0.3",
     "typescript": "^4.0.5",
@@ -46,8 +47,10 @@
     "antd": "^4.16.13",
     "eva-plugin-joystick": "^0.2.0",
     "eventemitter3": "^3.1.2",
+    "postcss-plugin-rpx2vw": "^0.0.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "universal-toast": "^1.2.3",
     "vconsole": "^3.9.1",
     "ws": "^6.2.2"
   }

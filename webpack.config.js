@@ -74,6 +74,8 @@ module.exports = {
               loader: 'css',
               minify: true,
             },
+          }, {
+            loader: 'postcss-loader'
           },
         ],
       },

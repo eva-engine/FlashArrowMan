@@ -1,4 +1,3 @@
-import { createElement } from "react";
 import { render } from "react-dom";
 
 export function createHome() {

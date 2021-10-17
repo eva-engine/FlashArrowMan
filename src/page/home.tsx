@@ -107,3 +107,7 @@
 //   homepage.classList.add('hide');
 //   beginGame(result);
 // }
+
+export function HomePage() {
+  return <div></div>
+}

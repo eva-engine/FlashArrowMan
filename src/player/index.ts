@@ -1,6 +1,6 @@
 import { InitToBStruct, InMsgStruct, ListToSStruct, MessageStruct, RankToBStruct, RankToSStruct, WatchToBStruct, WatchToSStruct } from "../socket/define";
 import { Socket } from "../socket";
-
+import Toast from "universal-toast";
 class Player {
   id: number
   socket: Socket
@@ -12,12 +12,12 @@ class Player {
   constructor() {
 
   }
-  init(name: string, time: number) {
+  init(name: string, time: number, tel?: string): Promise<boolean> {
     return new Promise(resolve => {
-      this.socket = new Socket(__SERVER_PATH__ + `?name=${encodeURIComponent(name)}&time=${time}`);
+      this.socket = new Socket(__SERVER_PATH__ + `?name=${encodeURIComponent(name)}&tel=${tel}&time=${time}`);
       this.socket.ws.onclose = e => {
         // TODO
-        console.log(e.reason);
+        Toast.show(e.reason);
         resolve(false);
       }
       this.socket.once('init', e => {
@@ -28,22 +28,6 @@ class Player {
         this.active = true;
         this.name = name;
         this.time = time;
-        const countBoard = document.querySelector('#countBoard') as HTMLDivElement;
-        // 兼容大屏端
-        if (countBoard) {
-          countBoard.innerText = `房间数:${homeCount}, 玩家数:${userCount}`;
-          const nameDom = document.createElement('div');
-          nameDom.id = 'unameBtn';
-          nameDom.innerText = name;
-          nameDom.addEventListener('click', async () => {
-            console.log('功能未实现');
-            // const newName = prompt('输入希望修改后的昵称');
-            // if (!newName) return;
-            // @TODO
-          });
-          countBoard.appendChild(nameDom);
-        }
-
         resolve(true);
       })
     })

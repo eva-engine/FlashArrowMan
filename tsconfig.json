@@ -14,8 +14,13 @@
     "downlevelIteration": true,
     "noImplicitReturns": false,
     "noUnusedParameters": true,
-    "lib": ["esnext", "dom"],
-    "types": ["node"],
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "types": [
+      "node"
+    ],
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "noImplicitAny": true,
@@ -24,5 +29,9 @@
     "baseUrl": "./",
     "jsx": "react-jsx"
   },
-  "include": ["./src/**/*.ts"],
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/index.tsx",
+    "src/page/home.tsx"
+  ],
 }

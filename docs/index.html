@@ -8,13 +8,7 @@
     window.isPlayerClient = true;
   </script>
   <style>
-    * {
-      margin: 0;
-      border: 0;
-      font-size: 36px;
-    }
-
-    .nice {
+    /* .nice {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -257,19 +251,41 @@
       padding: 4vw 2vw;
     }
 
-    .hide {
-      display: none;
-    }
+
 
     #countBoard {
       text-indent: 1em;
       color: #333;
     }
+
+    */
+  </style>
+  <style>
+    * {
+      margin: 0;
+      border: 0;
+      font-size: 36px;
+    }
+
+    .hide {
+      display: none;
+    }
+
+    .page {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: rgb(238, 238, 238);
+    }
   </style>
 </head>
 
 <body>
-  <div class="login">
+  <div id="react-app">
+
+  </div>
+  <!-- <div class="login">
     <div class="input-area" id="nameInput">
       <input type="text" id="roomNumber" placeholder="请输入昵称">
     </div>
@@ -285,7 +301,8 @@
     </script>
     <script src="./main.js" onload="loaded()"></script>
 
-  </div>
+  </div> -->
+  <script src="./main.js"></script>
 </body>
 
 </html>
