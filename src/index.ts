@@ -1,3 +1,4 @@
+import React from 'react';
 import resources from './resources';
 
 import { Game, resource } from '@eva/eva.js';
@@ -15,7 +16,9 @@ import { makeHorizental } from './utils';
 import { TilingSpriteSystem } from '@eva/plugin-renderer-tiling-sprite';
 import { netPlayer } from './player';
 import { initHole, renderHole } from './page/home';
+import { createHome } from './entry'
 
+window.React = React
 // import VConsole from 'vconsole';
 
 // new VConsole()
@@ -27,7 +30,7 @@ const canvas = document.querySelector('#canvas') as HTMLCanvasElement;
 var orientation = (screen.orientation || {}).type || (screen as any).mozOrientation || (screen as any).msOrientation;
 console.log(orientation, 123123123)
 // if (orientation === 'portrait-primary') {
-  makeHorizental(canvas)
+makeHorizental(canvas)
 // }
 
 export const game = new Game({
@@ -128,12 +131,14 @@ if ((localStorage['QIANER_NAME'] && localStorage['QIANER_TIME']) || (__DEV__ && 
 function enter() {
   loginToHome();
   // 进入房间列表界面
-  initHole();
-  renderHole();
+  // initHole();
+  // renderHole();
 }
 function loginToHome() {
   const login = document.body.querySelector('.login');
   login.classList.add('hide');
-  const home = document.body.querySelector('.home');
-  home.classList.remove('hide');
+  createHome()
+
+  // const home = document.body.querySelector('.home');
+  // home.classList.remove('hide');
 }
