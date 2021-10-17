@@ -1,3 +1,4 @@
+import "./"
 export function ListPage() {
-  return <div></div>
+  return <></>
 }

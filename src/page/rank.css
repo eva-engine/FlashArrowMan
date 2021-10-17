@@ -1,0 +1,128 @@
+.rank.page {
+  overflow: auto;
+}
+.rank.page .top {
+  background-color: rgb(149, 199, 239);
+  height: 460rpx;
+  background: rgb(149, 199, 239) url('https://gw.alicdn.com/imgextra/i2/O1CN01qIsGvg1cAz6UVbPrB_!!6000000003561-2-tps-147-171.png') no-repeat center/auto 175rpx;
+}
+
+.rank.page .top .list {
+  display: flex;
+  justify-content: space-around;
+  padding: 12rpx;
+  padding-top: 24rpx;
+}
+
+.rank.page .top .list .item {
+  width: 3em;
+  font-size: 44rpx;
+  color: #fff;
+  text-align: center;
+}
+
+.rank.page .hr {
+  margin: 0 75rpx;
+  border-bottom: 2px solid white;
+}
+
+.rank.page .select-right {
+  position: relative;
+}
+
+.rank.page .select-right::after {
+  position: absolute;
+  content: '';
+  background-color: #fff;
+  width: 110rpx;
+  height: 8rpx;
+  right: 65rpx;
+}
+
+.rank-card {
+  position: absolute;
+  width: 200rpx;
+  height: 255rpx;
+  border-radius: 8rpx;
+  border: 1px solid rgb(211, 211, 211);
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-size: 70rpx auto;
+  background-position: center 10rpx;
+}
+
+.rank-card:nth-child(1) {
+  top: 338rpx;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  background-image: url('https://gw.alicdn.com/imgextra/i1/O1CN01COaT7f1wk3kXDuy0m_!!6000000006345-2-tps-72-98.png');
+}
+
+.rank-card:nth-child(2) {
+  top: 388rpx;
+  left: 32rpx;
+  background-image: url('https://gw.alicdn.com/imgextra/i1/O1CN01fqBZKZ1bp05lGNpN8_!!6000000003513-2-tps-72-98.png');
+}
+
+.rank-card:nth-child(3) {
+  top: 388rpx;
+  right: 32rpx;
+  background-image: url('https://gw.alicdn.com/imgextra/i3/O1CN01d77gis1Gi28YUd1LO_!!6000000000655-2-tps-72-98.png');
+}
+
+.rank-card .name {
+  width: 80%;
+  margin: 140rpx auto 0 auto;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.rank-card .score {
+  color: #e45644;
+  margin-top: 23rpx;
+  text-align: center;
+}
+
+.rank.page .last {
+  padding-top: 235rpx;
+}
+
+.rank.page .hr.gray {
+  border-bottom-color: rgb(211, 211, 211);
+  margin: 0 35rpx;
+}
+.rank.page .last .list{
+  overflow: auto;
+}
+.rank-item {
+  height: 83rpx;
+  display: flex;
+  padding: 0 25rpx;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rank-item .index {
+  width: 50rpx;
+  padding-right: 20rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: rgb(102,102,102);
+}
+
+.rank-item .name {
+  flex: 1;
+  overflow: hidden;
+  color: #666;
+  font-size: 32rpx;
+}
+
+.rank-item .score {
+  width: 70rpx;
+  text-align: right;
+  font-size: 22rpx;
+  padding-right: 10rpx;
+}
