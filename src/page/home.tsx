@@ -107,7 +107,12 @@
 //   homepage.classList.add('hide');
 //   beginGame(result);
 // }
+import { ListPage } from "./list";
+import { RankPage } from "./rank";
 
 export function HomePage() {
-  return <div></div>
+  return <>
+    <ListPage></ListPage>
+    <RankPage></RankPage>
+  </>
 }
