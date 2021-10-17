@@ -1,4 +1,4 @@
-import { InitToBStruct, InMsgStruct, ListToSStruct, MessageStruct, RankToSStruct, WatchToBStruct, WatchToSStruct } from "../socket/define";
+import { InitToBStruct, InMsgStruct, ListToSStruct, MessageStruct, RankToBStruct, RankToSStruct, WatchToBStruct, WatchToSStruct } from "../socket/define";
 import { Socket } from "../socket";
 
 class Player {
@@ -7,6 +7,8 @@ class Player {
   name: string
   time: number
   active = false
+  userCount: number
+  homeCount: number
   constructor() {
 
   }
@@ -20,6 +22,8 @@ class Player {
       }
       this.socket.once('init', e => {
         const { id, userCount, homeCount } = (e as InitToBStruct).data;
+        this.userCount = userCount;
+        this.homeCount = homeCount;
         this.id = id;
         this.active = true;
         this.name = name;
@@ -67,15 +71,20 @@ class Player {
     });
     return this.socket.onceOrError('home');
   }
-  async wantRankList() {
+  async wantRankList(from = 0, to = 20) {
     this.socket.send<RankToSStruct>({
       type: 'rank',
       data: {
-        from: 0,
-        to: 20
+        from,
+        to
       }
     });
-    return this.socket.onceOrError('rank');
+    const e = await this.socket.onceOrError('rank') as RankToBStruct;
+    let index = from;
+    for (const c of e.data.list) {
+      c.index = ++index;
+    }
+    return e;
   }
   async want<T extends MessageStruct>(e: T) {
     this.socket.send(e);

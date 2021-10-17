@@ -1,4 +1,3 @@
-import { game } from "../watch";
 import { GAME_WIDTH } from "../const";
 import { netPlayer } from "../player";
 import { TempPlayer } from "../player/TempPlayer";
@@ -23,7 +22,8 @@ export class SingleWatchGame {
     }
   }
   async initEventer() {
-    this.eventer.once('error', () => {
+    this.eventer.once('error', async () => {
+      await Promise.resolve();
       this.destroy();
     })
   }
@@ -86,7 +86,7 @@ export class SingleWatchGame {
     netPlayer.socket.releasePlayer();
     this.fighter1?.destroy();
     this.fighter2?.destroy();
-    const needDestroy = game.scene.gameObjects.filter(go => go !== game.scene);
+    const needDestroy = window.game.scene.gameObjects.filter(go => go !== window.game.scene);
     for (const go of needDestroy) {
       go.destroy();
     }

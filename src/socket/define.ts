@@ -53,6 +53,7 @@ export type RankToBStruct = MessageStruct<{
 export type UserItem = {
   id: number,
   score: number,
+  index?: number
   name: string,
   token: string,
   updateTime: number,

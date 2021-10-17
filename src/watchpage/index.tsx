@@ -6,7 +6,7 @@ import { RankPage } from "./page/rank";
 
 export async function initWatchPage() {
   const e = await netPlayer.wantHomeList() as ListToBStruct;
-  const e2 = await netPlayer.wantRankList() as RankToBStruct;
+  const e2 = await netPlayer.wantRankList(0, 10) as RankToBStruct;
   render(
     < div className="container">
       <HomePage propHomes={e.data}></HomePage>

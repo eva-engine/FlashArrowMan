@@ -30,6 +30,7 @@ export class Watcher {
     const game = new SingleWatchGame(result);
     if (__DEV__) {
       game.eventer.on('error', () => {
+        console.log('over')
         setTimeout(() => {
           this.randomWatch();
         }, 1000);

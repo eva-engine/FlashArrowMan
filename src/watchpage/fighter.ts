@@ -3,7 +3,7 @@ import { Img } from "@eva/plugin-renderer-img";
 import { Physics, PhysicsType } from "@eva/plugin-matterjs";
 import BowString from "../components/BowString";
 import Player from "../components/Player";
-import { game, WATCH_HEIGHT } from "../watch";
+import { WATCH_HEIGHT } from "../watch";
 import { AttackDataStruct, EmitDataStruct, MoveDataStruct } from "../socket/define.local";
 import createArrow from "../gameObjects/arrow";
 import { QIAN_PHYSICS_CONFIG } from "../const";
@@ -39,7 +39,7 @@ export class Fighter {
     const bow = this.bow;
     bow.addComponent(new Img({ resource: 'bow' }))
     this.player = bow.addComponent(new Player())
-    game.scene.addChild(bow);
+    window.game.scene.addChild(bow);
     const bowString = new GameObject('bowString', {
       anchor: {
         x: 0.5, y: 0
@@ -65,8 +65,7 @@ export class Fighter {
         isStatic: true,
       },
     }))
-    console.log('box group:', -this.index - 1);
-    game.scene.addChild(box);
+    window.game.scene.addChild(box);
   }
   progress: Progress
   initProgress() {
@@ -77,13 +76,13 @@ export class Fighter {
     });
     this.progress = progressGo.addComponent(new Progress({
     }))
-    game.scene.addChild(progressGo);
+    window.game.scene.addChild(progressGo);
   }
   myHPText: HPText
   initHp() {
     const { hp: myHP, hpText: myHPText } = createHP({ position: { y: WATCH_HEIGHT / 2 + (.5 - this.index) * 100, x: 50 } })
     this.myHPText = myHPText;
-    game.scene.addChild(myHP);
+    window.game.scene.addChild(myHP);
   }
   attackController: Attack
   constructor(public id: number, public name: string, public hp: number, public index: number) {
@@ -125,7 +124,7 @@ export class Fighter {
       stopRotation: true,
     }))
 
-    game.scene.addChild(arrow);
+    window.game.scene.addChild(arrow);
 
     setTimeout(() => {
       try {
