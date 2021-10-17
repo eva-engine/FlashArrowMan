@@ -43,7 +43,7 @@ export function ListPage() {
     netPlayer.wantRankList(0, 0).then(e => {
       setRank(e.data.index + '');
     })
-  },[])
+  }, [])
   return <div className="list-container">
     <div className="list-header">
       <div className="head-pic"></div>
