@@ -6,8 +6,6 @@ import Toast from "universal-toast"
 import event from "src/event"
 import Head from './head'
 
-window.netPlayer = netPlayer
-
 export function ListPage() {
   const randomNum = () => 200 + ~~(Math.random() * 50)
   const [homeList, setHomeList] = useState([] as unknown as ListToBStruct['data'])
