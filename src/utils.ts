@@ -81,5 +81,4 @@ export const makeHorizental = (canvas: Element) => {
     }, c)
     // return _.apply(this, arguments)
   }
-
 }
