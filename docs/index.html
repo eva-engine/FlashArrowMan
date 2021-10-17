@@ -271,32 +271,13 @@
 <body>
   <div class="login">
     <div class="input-area" id="nameInput">
-      <input type="text" id="roomNumber" placeholder="请输入花名（昵称）">
+      <input type="text" id="roomNumber" placeholder="请输入昵称">
     </div>
     <div class="btn" id="entry">加载中...</div>
   </div>
-  <div class="home hide">
-    <div class="head">
-      <div id="homeTargetItem"></div>
-      <div class="list">
-        <div class="item">对战</div>
-        <div class="item">排行榜</div>
-      </div>
-    </div>
-    <div id="countBoard">
-      加载中。。。
-    </div>
-    <div class="body" id="homeBody">
-
-    </div>
-    <div class="bottom">
-      <div class="item" id="enterBtn">创建房间</div>
-      <div class="item" id="fastBtn">快速对局</div>
-    </div>
-  </div>
+  <div class="main-content"></div>
   <div class="container hide app-container">
     <canvas id="canvas" style="width: 100%"></canvas>
-    <script src="//cdn.bootcdn.net/ajax/libs/eventemitter3/3.1.2/index.min.js"></script>
     <script>
       function loaded() {
         document.querySelector('#entry').innerHTML = '进入'
