@@ -182,6 +182,7 @@ export class SingleGame {
 
   reloadHome(e: HomeMsgStruct) {
     this.player.emit('onAttack');
+    this.enemyName = e.data.users.find(({ name }) => name !== netPlayer.name)?.name || this.enemyName
   }
 
   initNetReactive() {
@@ -200,7 +201,7 @@ export class SingleGame {
       const data = e.data as UnionTurnStruct['data'];
       switch (data.type) {
         case 'attack': {
-          this.enemyHPText.setHP(this.enemyName + ' HP: ' + data.hp);
+          this.enemyHPText.setHP(this.enemyName + '的HP: ' + data.hp);
           if (data.hp <= 0) {
             this.enemyHPText.setHP('你赢了');
             this.close();
