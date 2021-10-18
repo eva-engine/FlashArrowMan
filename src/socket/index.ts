@@ -1,4 +1,5 @@
 import EventEmitter from "eventemitter3";
+import Toast from "universal-toast";
 import type { TempPlayer } from "../player/TempPlayer";
 import { MessageStruct, MessageType } from "./define";
 
@@ -16,6 +17,7 @@ export class Socket extends EventEmitter<MessageType> {
         this.tempPlayer.emit(data.type, data);
       }
     }
+
   }
   registerPlayer(player: TempPlayer) {
     this.tempPlayer = player;

@@ -79,9 +79,9 @@ export function ListPage() {
         backgroundColor: `rgb(${randomNum()},${randomNum()},${randomNum()})`
       }} onClick={() => entry(item.token)}>
         <div className="room-title">
-          {item.users.length}
+          {item.masterName}
         </div>
-        <div className="people-count">人数：123</div>
+        <div className="people-count">人数：{item.users.length}</div>
       </li>)}
     </ul>
     <div className="actions">

@@ -97,7 +97,7 @@ export class SingleGame {
   myHPText: HPText
   enemyHPText: HPText
   initHp() {
-    const { hp: myHP, hpText: myHPText } = createHP({ position: { y: 670, x: 50 } })
+    const { hp: myHP, hpText: myHPText } = createHP({ position: { y: 100, x: 1300 } })
     this.myHPText = myHPText;
     game.scene.addChild(myHP);
     const { hp: enemyHP, hpText: enemyHPText } = createHP({ position: { y: 100, x: 50 } })
@@ -107,6 +107,9 @@ export class SingleGame {
 
   leftJsGo: GameObject
   leftJs: Joystick
+
+  enemyName: string = '敌方';
+
   initLeftJs() {
     const leftJsGo = this.leftJsGo = new GameObject('Joystrick', {
       position: {
@@ -197,7 +200,7 @@ export class SingleGame {
       const data = e.data as UnionTurnStruct['data'];
       switch (data.type) {
         case 'attack': {
-          this.enemyHPText.setHP('敌方HP: ' + data.hp);
+          this.enemyHPText.setHP(this.enemyName + ' HP: ' + data.hp);
           if (data.hp <= 0) {
             this.enemyHPText.setHP('你赢了');
             this.close();

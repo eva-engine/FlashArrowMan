@@ -56,10 +56,10 @@ export default class Attack extends Component {
       if (!window.isPlayerClient) return;
       const player = this.gameObject.getComponent(Player)
       player.onAttack(10)
-      this.myHPText.setHP('HP：' + player.hp)
+      this.myHPText.setHP('我的HP：' + player.hp)
     })
 
-    this.myHPText.setHP('HP：' + this.player.hp)
+    this.myHPText.setHP('我的HP：' + this.player.hp)
 
   }
   awake() {

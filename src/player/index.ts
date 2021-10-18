@@ -16,8 +16,8 @@ class Player {
     return new Promise(resolve => {
       this.socket = new Socket(__SERVER_PATH__ + `?name=${encodeURIComponent(name)}&tel=${tel}&time=${time}`);
       this.socket.ws.onclose = e => {
-        // TODO
-        Toast.show(e.reason);
+        e.reason ? Toast.show(e.reason) :
+          Toast.show('前方拥堵，请稍后刷新页面～', 10000);
         resolve(false);
       }
       this.socket.once('init', e => {
