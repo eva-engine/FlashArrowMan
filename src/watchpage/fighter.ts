@@ -108,8 +108,9 @@ export class Fighter {
     this.attackController.go.transform.rotation = data.rotation
     this.attackController.go.transform.position.x = data.ax;
     this.attackController.go.transform.position.y = data.ay;
-    this.attackController.go.transform.scale.x = data.forceEnhance + 1;
-    this.attackController.go.transform.scale.y = data.forceEnhance + 1;
+    const scale = data.forceEnhance + 1;
+    this.attackController.go.transform.scale.x = scale;
+    this.attackController.go.transform.scale.y = scale;
   }
   handleEmit(data: EmitDataStruct) {
     const { position: { x, y }, rotation, force, forceEnhance } = data;

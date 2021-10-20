@@ -102,5 +102,20 @@ export default [
       }
     },
     preload: true
+  },
+  {
+    name: 'emitter',
+    type: RESOURCE_TYPE.PARTICLES,
+    src: {
+      img_0: {
+        type: 'png',
+        url: "https://gw.alicdn.com/imgextra/i2/O1CN01Fi8ma31eWAcqY8pXg_!!6000000003878-2-tps-99-99.png"
+      },
+      json: {
+        type: 'json',
+        url: './statics/emitter.json'
+      }
+    },
+    preload: true
   }
 ];

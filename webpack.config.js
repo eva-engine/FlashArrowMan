@@ -7,7 +7,7 @@ const { ESBuildMinifyPlugin } = require('esbuild-loader')
 const os = require('os');
 function getLocalIp() {
   const ifaces = os.networkInterfaces();
-  return Object.values(ifaces).find(dev => dev[1]?.address.startsWith('30.'))?.[1]?.address;
+  return Object.values(ifaces).find(dev => dev[1]?.address.startsWith('30.') || dev[1]?.address.startsWith('192.'))?.[1]?.address;
 }
 const localIp = getLocalIp() ?? '0.0.0.0';
 console.log('use dev ip address: ', localIp);

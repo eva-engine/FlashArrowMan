@@ -1,6 +1,7 @@
 import { Component, GameObject, UpdateParams } from "@eva/eva.js"
 import { Physics, PhysicsType } from "@eva/plugin-matterjs"
 import { Event } from "@eva/plugin-renderer-event"
+import { Particles, ParticleSystem } from "@eva/plugin-renderer-particles"
 import { GAME_HEIGHT, GAME_WIDTH, QIAN_PHYSICS_CONFIG } from "../const"
 import createArrow from "../gameObjects/arrow"
 import BowString from "./BowString"
@@ -36,8 +37,15 @@ export default class Attack extends Component {
   private player: Player
   private boxPhysics: Physics
 
+  particles: Particles
+
   init({ box, progress, string, myHPText }: IProps) {
-    this.box = box
+    this.box = box;
+    const emiterGo = new GameObject('emitter');
+
+    this.particles = emiterGo.addComponent(new Particles({ resource: 'emitter' }));
+    window.game.scene.addChild(emiterGo);
+    this.particles.pause();
     // this.evt = evt
     this.progress = progress
     this.string = string
@@ -79,11 +87,14 @@ export default class Attack extends Component {
     if (this.progress?.canArrow()) {
       this.doing = true
       this.beginTime = Date.now();
+      this.particles.play();
     }
   }
   onDrag(e: JoystickEventParams) {
     if (!this.doing) return;
-    let tmp = Math.atan((e.y || .0001) / (e.x || .0000001));
+    e.x = e.x || .0000001;
+    e.y = e.y || .0001;
+    let tmp = Math.atan(e.y / e.x);
     if (e.x < 0) {
       tmp = tmp + Math.PI / 2
     } else {
@@ -103,11 +114,22 @@ export default class Attack extends Component {
     this.force = force;
     const forceTime = Math.min(Date.now() - this.beginTime, 1500);
     const forceEnhance = this.forceEnhance = (Math.max(forceTime, 500) - 500) / 1000;
-    this.go.transform.scale.x = forceEnhance + 1;
-    this.go.transform.scale.y = forceEnhance + 1;
+    const scale = forceEnhance + 1
+    this.go.transform.scale.x = scale;
+    this.go.transform.scale.y = scale;
+
+    const xy2 = (e.x ** 2 + e.y ** 2) ** .5;
+    const rx = e.x / xy2;
+    const ry = e.y / xy2;
+    this.particles.emitter.ownerPos.set(
+      this.go.transform.position.x - rx * scale * 100,
+      this.go.transform.position.y - ry * scale * 100,
+    )
+
   }
   onEnd() {
-    this.string.setPercent(0)
+    this.string.setPercent(0);
+    this.particles.emitter.emit = false;
     if (!this.doing) return
 
     const speed2 = this.force * 0.5 + .1 // 这是力

@@ -167,6 +167,7 @@ export class SingleGame {
         y: 670
       }
     })
+    //@ts-ignore
     const joystick = this.leftJs = leftJsGo.addComponent(new Joystick({
       boxImageResource: 'box',
       btnImageResource: 'btn',
@@ -203,6 +204,7 @@ export class SingleGame {
         y: 670
       }
     })
+    //@ts-ignore
     this.rightJs = rightJsGo.addComponent(new Joystick({
       boxImageResource: 'box',
       btnImageResource: 'btn',
