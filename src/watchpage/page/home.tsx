@@ -4,6 +4,7 @@ import { RendererSystem } from "@eva/plugin-renderer";
 import { EventSystem } from "@eva/plugin-renderer-event";
 import { GraphicsSystem } from "@eva/plugin-renderer-graphics";
 import { Img, ImgSystem } from "@eva/plugin-renderer-img";
+import { ParticleSystem } from "@eva/plugin-renderer-particles";
 import { RenderSystem } from "@eva/plugin-renderer-render";
 import { SpriteAnimationSystem } from "@eva/plugin-renderer-sprite-animation";
 import { TextSystem } from "@eva/plugin-renderer-text";
@@ -65,7 +66,8 @@ export function HomePage({ propHomes }: { propHomes?: ListToBStruct['data'] }) {
             },
           },
         }),
-        new TilingSpriteSystem()
+        new TilingSpriteSystem(),
+        new ParticleSystem()
       ],
     });
 
