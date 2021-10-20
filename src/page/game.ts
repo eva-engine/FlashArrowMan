@@ -47,11 +47,11 @@ async function showTeach() {
     const go = new GameObject('teach', {
       position: {
         x: (GAME_WIDTH - 1288) * .5,
-        y: GAME_HEIGHT - 600
+        y: 0
       },
       size: {
         width: 1288,
-        height: 418
+        height: 724
       }
     });
     go.addComponent(new Img({ resource: 'teach' }));
