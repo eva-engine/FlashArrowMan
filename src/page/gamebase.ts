@@ -13,6 +13,8 @@ import { PhysicsSystem } from '@eva/plugin-matterjs';
 import { makeHorizental } from '../utils';
 import { TilingSpriteSystem } from '@eva/plugin-renderer-tiling-sprite';
 import { SoundSystem } from "@eva/plugin-sound";
+// import {} from "@eva/plugin-renderer-particles"
+
 let game: Game, appEvt: Event
 export function createGame(canvas: HTMLCanvasElement) {
 

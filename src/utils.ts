@@ -28,7 +28,7 @@ export const makeHorizental = (canvas: Element) => {
       })
       //     console.log(Object.keys(a), 123)
       //     a.xxx = 123123
-      if (event instanceof PointerEvent) {
+      if (window.PointerEvent && event instanceof PointerEvent) {
         changeXY(a, event)
       }
       //     console.log(a, 123999)
@@ -74,7 +74,7 @@ export const makeHorizental = (canvas: Element) => {
       if (event instanceof TouchEvent) {
         evt = new TouchEvent(eventName, a)
       } else {
-        evt = new PointerEvent(eventName, a)
+        evt = new (window.PointerEvent ?? window.MouseEvent)(eventName, a)
       }
 
       return callback.call(canvas, evt)
