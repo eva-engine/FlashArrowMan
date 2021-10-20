@@ -1,5 +1,5 @@
 import resources from "../resources";
-import { Game, resource } from '@eva/eva.js';
+import { Game, resource, RESOURCE_TYPE } from '@eva/eva.js';
 import { RendererSystem } from '@eva/plugin-renderer';
 import { Img, ImgSystem } from '@eva/plugin-renderer-img';
 import { Event, EventSystem } from '@eva/plugin-renderer-event';
@@ -12,68 +12,85 @@ import { GAME_HEIGHT, GAME_WIDTH } from '../const';
 import { PhysicsSystem } from '@eva/plugin-matterjs';
 import { makeHorizental } from '../utils';
 import { TilingSpriteSystem } from '@eva/plugin-renderer-tiling-sprite';
-let game:Game, appEvt:Event
+import { SoundSystem } from "@eva/plugin-sound";
+let game: Game, appEvt: Event
 export function createGame(canvas: HTMLCanvasElement) {
-    resource.addResource(resources);
-    resource.preload()
 
-    // var orientation = (screen.orientation || {}).type || (screen as any).mozOrientation || (screen as any).msOrientation;
-    // console.log(orientation, 123123123)
-    // if (orientation === 'portrait-primary') {
-    makeHorizental(canvas)
-    // }
+  resource.addResource(resources);
+  if (!localStorage['QIANER_TEACH']) {
+    resource.addResource([{
+      name: 'teach',
+      type: RESOURCE_TYPE.IMAGE,
+      src: {
+        image: {
+          type: 'png',
+          url: 'https://gw.alicdn.com/imgextra/i1/O1CN01noX7Fw1hOKj7TAZ1x_!!6000000004267-2-tps-1288-418.png'
+        }
+      },
+      preload: true
+    }])
+  }
+  resource.preload()
 
-    game = new Game({
-        systems: [
-            new RendererSystem({
-                canvas,
-                width: GAME_WIDTH,
-                height: GAME_HEIGHT,
-                antialias: true,
-                enableScroll: false,
-                resolution: window.devicePixelRatio / 2
-            }),
-            new ImgSystem(),
-            new TransitionSystem(),
-            new SpriteAnimationSystem(),
-            new RenderSystem(),
-            new EventSystem(),
-            new GraphicsSystem(),
-            new TextSystem(),
-            new PhysicsSystem({
-                resolution: window.devicePixelRatio / 2,
-                // isTest: true, // Whether to enable debugging mode
-                // element: document.getElementById('game-container'), // Mount point of canvas node in debug mode
-                world: {
-                    gravity: {
-                        y: 0, // gravity
-                    },
-                },
-            }),
-            new TilingSpriteSystem()
-        ],
-    });
+  // var orientation = (screen.orientation || {}).type || (screen as any).mozOrientation || (screen as any).msOrientation;
+  // console.log(orientation, 123123123)
+  // if (orientation === 'portrait-primary') {
+  makeHorizental(canvas)
+  // }
 
-    window.game = game;
 
-    game.scene.transform.size.width = GAME_WIDTH
-    game.scene.transform.size.height = GAME_HEIGHT;
+  game = new Game({
+    systems: [
+      new RendererSystem({
+        canvas,
+        width: GAME_WIDTH,
+        height: GAME_HEIGHT,
+        antialias: true,
+        enableScroll: false,
+        resolution: window.devicePixelRatio / 2
+      }),
+      new ImgSystem(),
+      new TransitionSystem(),
+      new SpriteAnimationSystem(),
+      new RenderSystem(),
+      new EventSystem(),
+      new GraphicsSystem(),
+      new TextSystem(),
+      new PhysicsSystem({
+        resolution: window.devicePixelRatio / 2,
+        // isTest: true, // Whether to enable debugging mode
+        // element: document.getElementById('game-container'), // Mount point of canvas node in debug mode
+        world: {
+          gravity: {
+            y: 0, // gravity
+          },
+        },
+      }),
+      new TilingSpriteSystem(),
+      new SoundSystem()
+    ],
+  });
 
-    // game.scene.transform.rotation = Math.PI / 2
-    // game.scene.transform.position.x = GAME_WIDTH
+  window.game = game;
 
-    // const graphics = game.scene.addComponent(new Graphics())
-    // graphics.graphics.beginFill(0x666666, 1)
-    // graphics.graphics.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT)
-    // graphics.graphics.endFill()
+  game.scene.transform.size.width = GAME_WIDTH
+  game.scene.transform.size.height = GAME_HEIGHT;
 
-    game.scene.addComponent(new Img({
-        resource: 'background',
-    }))
+  // game.scene.transform.rotation = Math.PI / 2
+  // game.scene.transform.position.x = GAME_WIDTH
 
-    appEvt = game.scene.addComponent(new Event())
-    return { game, appEvt }
+  // const graphics = game.scene.addComponent(new Graphics())
+  // graphics.graphics.beginFill(0x666666, 1)
+  // graphics.graphics.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT)
+  // graphics.graphics.endFill()
+
+  game.scene.addComponent(new Img({
+    resource: 'background',
+  }))
+
+  appEvt = game.scene.addComponent(new Event())
+  return { game, appEvt }
 }
 export function getGame() {
-    return { game, appEvt }
+  return { game, appEvt }
 }

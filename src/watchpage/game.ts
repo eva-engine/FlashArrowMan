@@ -2,7 +2,7 @@ import { GAME_WIDTH } from "../const";
 import { netPlayer } from "../player";
 import { TempPlayer } from "../player/TempPlayer";
 import { HomeMsgStruct, WatchToBStruct } from "../socket/define";
-import { MoveDataStruct, UnionTurnStruct } from "../socket/define.local";
+import { UnionTurnStruct } from "../socket/define.local";
 import { WATCH_HEIGHT } from "../watch";
 import { Fighter } from "./fighter";
 
@@ -22,20 +22,22 @@ export class SingleWatchGame {
     }
   }
   async initEventer() {
-    this.eventer.once('error', async () => {
+    this.eventer.delayOnce('error', async () => {
       await Promise.resolve();
       this.destroy();
     })
   }
+  ticker = () => { this.eventer.onRender(); }
   constructor(data: WatchToBStruct) {
     netPlayer.socket.registerPlayer(this.eventer);
+    window.game.ticker.add(this.ticker)
     for (const user of (data.data as HomeMsgStruct['data']).users) {
       if (user.ready) {
         this.initFighter(user.id, user.name);
       }
     }
     this.initEventer();
-    this.eventer.on('home', async (e: HomeMsgStruct) => {
+    this.eventer.delayOn('home', async (e: HomeMsgStruct) => {
       let reached = Object.keys(this.fighterMap);
       for (const user of (e.data).users) {
         if (user.ready) {
@@ -47,7 +49,7 @@ export class SingleWatchGame {
         }
       }
     })
-    this.eventer.on('turn', (e: UnionTurnStruct) => {
+    this.eventer.delayOn('turn', (e: UnionTurnStruct) => {
       const fighter = this.fighterMap[e.from];
       if (!fighter) return;
       switch (e.data.type) {
@@ -87,6 +89,7 @@ export class SingleWatchGame {
     if (this._destroyed) return;
     this._destroyed = true;
     netPlayer.socket.releasePlayer();
+    window.game.ticker.remove(this.ticker);
     this.fighter1?.destroy();
     this.fighter2?.destroy();
     const needDestroy = window.game.scene.transform.children.map(({ gameObject }) => gameObject)

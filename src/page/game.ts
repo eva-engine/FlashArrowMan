@@ -4,7 +4,7 @@ import createArrow from '../gameObjects/arrow';
 import { Physics, PhysicsType } from '@eva/plugin-matterjs';
 import Progress from '../components/Progress';
 import BowString from '../components/BowString';
-import { AttackMsgStruct, EmitMsgStruct, MoveDataStruct, MoveMsgStruct, UnionTurnStruct } from '../socket/define.local';
+import { AttackMsgStruct, EmitDataStruct, EmitMsgStruct, MoveDataStruct, MoveMsgStruct, UnionTurnStruct } from '../socket/define.local';
 import Player from '../components/Player';
 import createHP from '../gameObjects/myHP';
 import Attack from '../components/Attack';
@@ -15,17 +15,59 @@ import { TempPlayer } from '../player/TempPlayer';
 import { netPlayer } from '../player';
 import { HomeMsgStruct } from 'src/socket/define';
 import HPText from '../components/HPText';
-import { Event } from '@eva/plugin-renderer-event';
+import { Event, HIT_AREA_TYPE } from '@eva/plugin-renderer-event';
 import { getGame } from './gamebase';
 import event from '../event';
 import { FadeText } from '../gameObjects/FadeText';
+import { Sound } from '@eva/plugin-sound';
+import { Graphics } from '@eva/plugin-renderer-graphics';
 let game: Game, appEvt: Event
 // const gamePage = document.querySelector('.app-container');
-export function beginGame(e: HomeMsgStruct) {
+export async function beginGame(e: HomeMsgStruct) {
   // gamePage.classList.remove('hide');
-  event.emit('gameStart')
+  event.emit('gameStart');
+  if (!localStorage['QIANER_TEACH']) {
+    await showTeach();
+    localStorage['QIANER_TEACH'] = true;
+  }
   new SingleGame(e);
 }
+async function showTeach() {
+  return new Promise(resolve => {
+    const { game, appEvt } = getGame();
+    const bg = new GameObject('teachout', {
+      size: {
+        width: GAME_WIDTH,
+        height: GAME_HEIGHT
+      }
+    });
+    const g = bg.addComponent(new Graphics());
+
+    g.graphics.beginFill(0x000, .5).drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT).endFill();
+    const go = new GameObject('teach', {
+      position: {
+        x: (GAME_WIDTH - 1288) * .5,
+        y: GAME_HEIGHT - 600
+      },
+      size: {
+        width: 1288,
+        height: 418
+      }
+    });
+    go.addComponent(new Img({ resource: 'teach' }));
+    let ended = false;
+    appEvt.on('touchstart', end);
+    function end() {
+      if (ended) return;
+      ended = true;
+      bg.destroy();
+      resolve(true);
+    }
+    bg.addChild(go);
+    game.scene.addChild(bg);
+  })
+}
+
 // 一局游戏
 export class SingleGame {
   eventer = new TempPlayer();
@@ -50,9 +92,13 @@ export class SingleGame {
   })
   string: BowString
   player: Player
+  shootSound: Sound
+  attackSound: Sound
+
   initBow() {
     const bow = this.bow;
     bow.addComponent(new Img({ resource: 'bow' }))
+    this.shootSound = bow.addComponent(new Sound({ resource: 'shoot' }));
     this.player = bow.addComponent(new Player())
     game.scene.addChild(bow);
     const bowString = new GameObject('bowString', {
@@ -60,6 +106,9 @@ export class SingleGame {
         x: 0.5, y: 0
       },
     })
+    this.attackSound = bowString.addComponent(new Sound({
+      resource: 'attack'
+    }))
     const string = this.string = bowString.addComponent(new BowString())
     string.setPercent(0);
     bow.addChild(bowString);
@@ -225,6 +274,10 @@ export class SingleGame {
               },
               duration: 1000
             });
+
+            const sound = tip.addComponent(new Sound({ resource: 'attack2' }));
+            sound.volume = .4 + lost * .03;
+            sound.play();
             game.scene.addChild(tip);
           }
           if (data.hp <= 0) {
@@ -235,6 +288,7 @@ export class SingleGame {
         }
         case 'emit': {
           let { position: { x, y }, force, rotation, forceEnhance } = data
+          forceEnhance = forceEnhance || 0;
           x = GAME_WIDTH - x
           y = -y
           force.x = -force.x
@@ -244,6 +298,9 @@ export class SingleGame {
           enemy.transform.rotation = rotation + Math.PI
           enemy.transform.scale.x = 1 + forceEnhance;
           enemy.transform.scale.y = 1 + forceEnhance;
+          const sound = enemy.addComponent(new Sound({ resource: 'shoot2' }));
+          sound.volume = .4 + forceEnhance * .6;
+          sound.play();
           enemy.addComponent(new Physics({
             type: PhysicsType.RECTANGLE,
             bodyOptions: {
@@ -273,19 +330,22 @@ export class SingleGame {
         }
       }
     });
-
-    this.attackController.on('emit', (emitMsg) => {
+    this.attackController.on('emit', (emitMsg: EmitDataStruct) => {
+      this.shootSound.volume = .4 + (emitMsg.forceEnhance || 0) * .6;
+      this.shootSound.play();
       netPlayer.socket.send<EmitMsgStruct>({
         type: 'turn',
         data: {
           type: 'emit',
           ...emitMsg
         }
-      })
+      });
     });
 
     this.player.on('onAttack', d => {
       if (d > 0) {
+        this.attackSound.volume = .4 + d * .03;
+        this.attackSound.play();
         let tip = new FadeText({
           position: {
             x: this.bow.transform.position.x + 100,
@@ -363,6 +423,7 @@ export class SingleGame {
     this.reloadHome(e);
     this.ready();
   }
+
   ready() {
     netPlayer.socket.send({
       type: 'ready',

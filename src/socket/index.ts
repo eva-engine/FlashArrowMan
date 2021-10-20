@@ -22,9 +22,6 @@ export class Socket extends EventEmitter<MessageType> {
   registerPlayer(player: TempPlayer) {
     this.tempPlayer = player;
   }
-  registerWaitingPlayer() {
-
-  }
   releasePlayer() {
     this.tempPlayer.removeAllListeners();
     this.tempPlayer = undefined;

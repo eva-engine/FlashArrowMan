@@ -35,7 +35,7 @@ export default [
     },
     preload: true,
   },
-  { 
+  {
     name: 'box',
     type: RESOURCE_TYPE.IMAGE,
     src: {
@@ -47,7 +47,7 @@ export default [
     },
     preload: true,
   },
-  { 
+  {
     name: 'background',
     type: RESOURCE_TYPE.IMAGE,
     src: {
@@ -59,4 +59,48 @@ export default [
     },
     preload: true,
   },
+  {
+    name: 'shoot',
+    type: RESOURCE_TYPE.AUDIO,
+    src: {
+      audio: {
+        type: 'audio',
+        url: './statics/shoot.wav'
+      }
+    },
+    preload: true
+  },
+  {
+    name: 'attack',
+    type: RESOURCE_TYPE.AUDIO,
+    src: {
+      audio: {
+        type: 'audio',
+        url: './statics/attack.wav'
+      }
+    },
+    preload: true
+  },
+  {
+    name: 'shoot2',
+    type: RESOURCE_TYPE.AUDIO,
+    src: {
+      audio: {
+        type: 'audio',
+        url: './statics/shoot2.wav'
+      }
+    },
+    preload: true
+  },
+  {
+    name: 'attack2',
+    type: RESOURCE_TYPE.AUDIO,
+    src: {
+      audio: {
+        type: 'audio',
+        url: './statics/attack2.wav'
+      }
+    },
+    preload: true
+  }
 ];

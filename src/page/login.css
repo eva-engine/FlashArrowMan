@@ -33,3 +33,10 @@
   text-align: center;
   margin: 83rpx auto;
 }
+
+html, body, canvas {
+  -webkit-touch-callout: none;
+  touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}

@@ -58,7 +58,11 @@ export default class Attack extends Component {
       if (!window.isPlayerClient) return;
       const player = this.gameObject.getComponent(Player);
       // 24 < speed < 60
-      const lost = ~~(speed / 6 + (scale - 1) * 5);
+      // const lost = ~~(speed / 6 + (scale - 1) * 5);
+      const lost = Math.round((speed / 6) + ((scale - 1) * 5));
+      if (lost > 4) {
+        console.log(speed, scale);
+      }
       player.onAttack(lost);
       this.myHPText.setHP('我的HP：' + player.hp);
     })
@@ -89,7 +93,7 @@ export default class Attack extends Component {
 
 
     const force = Math.sqrt(e.x ** 2 + e.y ** 2);
-    this.string.setPercent(force * 100  + this.forceEnhance * 40);
+    this.string.setPercent(force * 100 + this.forceEnhance * 40);
 
 
     this.go.transform.rotation = tmp
@@ -137,7 +141,6 @@ export default class Attack extends Component {
     let go1 = this.go
     this.go = undefined
     setTimeout(() => {
-      console.log(go1.getComponent(Physics).body.speed);
       try {
         go1.destroy()
       } catch (e) {
