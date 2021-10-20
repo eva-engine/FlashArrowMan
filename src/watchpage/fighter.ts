@@ -96,6 +96,7 @@ export class Fighter {
     this.attackController.limitPos = false;
     // @ts-ignore
     __DEV__ && (window.attack = this.attackController);
+
   }
   handleMove(data: MoveDataStruct) {
     this.bow.transform.position.x = data.x;
@@ -111,6 +112,22 @@ export class Fighter {
     const scale = data.forceEnhance + 1;
     this.attackController.go.transform.scale.x = scale;
     this.attackController.go.transform.scale.y = scale;
+    const r = -data.rotation;
+    if (data.x !== data.ax || data.forceEnhance > 0) {
+      try {
+        this.attackController.particles.play();
+        try {
+          this.attackController.particles.emitter.ownerPos.set(
+            data.ax - Math.sin(r) * scale * 100,
+            data.ay - Math.cos(r) * scale * 100,
+          )
+        } catch (e) {
+          console.error(e)
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    }
   }
   handleEmit(data: EmitDataStruct) {
     const { position: { x, y }, rotation, force, forceEnhance } = data;
@@ -118,6 +135,11 @@ export class Fighter {
     arrow.transform.rotation = rotation;
     arrow.transform.scale.x = forceEnhance + 1;
     arrow.transform.scale.y = forceEnhance + 1;
+    try {
+      this.attackController.particles.emitter.emit = false;
+    } catch {
+
+    }
     arrow.addComponent(new Physics({
       type: PhysicsType.RECTANGLE,
       bodyOptions: {
