@@ -45,18 +45,22 @@ export default class Attack extends Component {
     this.player = this.gameObject.getComponent(Player)
     this.progress.on('arrowReady', () => {
       // console.log('arrowReady')
-      const y = Math.cos(this.gameObject.transform.rotation) * -7
-      const x = Math.sin(this.gameObject.transform.rotation) * 7
-      this.createArrow({ rotation: this.gameObject.transform.rotation, position: { x, y } });
+      // const y = Math.cos(this.gameObject.transform.rotation) * -7
+      // const x = Math.sin(this.gameObject.transform.rotation) * 7
+      this.createArrow({ rotation: this.gameObject.transform.rotation, });
     })
 
     this.boxPhysics = this.box.getComponent(Physics);
     this.boxPhysics.on('collisionStart', (x: GameObject) => {
+      const speed = x.getComponent(Physics).body.speed;
+      const scale = x.transform.scale.x;
       x.destroy();
       if (!window.isPlayerClient) return;
-      const player = this.gameObject.getComponent(Player)
-      player.onAttack(10)
-      this.myHPText.setHP('我的HP：' + player.hp)
+      const player = this.gameObject.getComponent(Player);
+      // 24 < speed < 60
+      const lost = ~~(speed / 6 + (scale - 1) * 5);
+      player.onAttack(lost);
+      this.myHPText.setHP('我的HP：' + player.hp);
     })
 
     this.myHPText.setHP('我的HP：' + this.player.hp)
@@ -65,10 +69,12 @@ export default class Attack extends Component {
   awake() {
     // this.createArrow({ x: 0, y: -7 })
   }
-
+  beginTime = 0
+  forceEnhance = 0
   onBegin() {
     if (this.progress?.canArrow()) {
       this.doing = true
+      this.beginTime = Date.now();
     }
   }
   onDrag(e: JoystickEventParams) {
@@ -83,25 +89,32 @@ export default class Attack extends Component {
 
 
     const force = Math.sqrt(e.x ** 2 + e.y ** 2);
-    this.string.setPercent(force * 100)
+    this.string.setPercent(force * 100  + this.forceEnhance * 40);
 
 
     this.go.transform.rotation = tmp
-    this.go.transform.position.x = this.gameObject.transform.position.x + e.x * 40
-    this.go.transform.position.y = this.gameObject.transform.position.y + e.y * 40
+    this.go.transform.position.x = this.gameObject.transform.position.x + e.x * 100;
+    this.go.transform.position.y = this.gameObject.transform.position.y + e.y * 100;
 
-    this.force = force
+    this.force = force;
+    const forceTime = Math.min(Date.now() - this.beginTime, 1500);
+    const forceEnhance = this.forceEnhance = (Math.max(forceTime, 500) - 500) / 1000;
+    this.go.transform.scale.x = forceEnhance + 1;
+    this.go.transform.scale.y = forceEnhance + 1;
   }
   onEnd() {
     this.string.setPercent(0)
     if (!this.doing) return
 
-    const speed2 = Math.max(this.force * 0.6, .1) // 这是力
+    const speed2 = this.force * 0.5 + .1 // 这是力
     const r = Math.tan(this.go.transform.rotation + Math.PI / 2)
     let x = Math.sqrt(speed2 / (1 + r ** 2))
     x = r > 0 ? -x : x
     let y = r * x
-    // __DEV__ && console.log(x, y)
+    const densityRate = (this.forceEnhance + 1) ** 2
+    x *= densityRate;
+    y *= densityRate;
+    // __DEV__ && console.log(x, y);
 
     this.go.addComponent(new Physics({
       type: PhysicsType.RECTANGLE,
@@ -119,11 +132,12 @@ export default class Attack extends Component {
     }))
     this.progress.arrow()
 
-    this.emit('emit', { position: this.go.transform.position, force: { x, y }, rotation: this.go.transform.rotation });
-
+    this.emit('emit', { position: this.go.transform.position, force: { x, y }, rotation: this.go.transform.rotation, forceEnhance: this.forceEnhance });
+    this.forceEnhance = 0;
     let go1 = this.go
     this.go = undefined
     setTimeout(() => {
+      console.log(go1.getComponent(Physics).body.speed);
       try {
         go1.destroy()
       } catch (e) {
@@ -136,13 +150,14 @@ export default class Attack extends Component {
   createArrow({ position = { x: 0, y: 0 }, rotation = 0 }) {
     this.go = createArrow({
       x: position.x + this.gameObject.transform.position.x,
-      y: position.y + this.gameObject.transform.position.y
+      y: position.y + this.gameObject.transform.position.y,
     })
     this.go.transform.rotation = rotation
     this.gameObject.scene.addChild(this.go);
   }
   limitPos = true
   update() {
+    this.emit('beforerender');
     const position = this.gameObject.transform.position
     const { x, y } = position
     if (this.limitPos) {
@@ -159,8 +174,8 @@ export default class Attack extends Component {
         position.y = GAME_HEIGHT - 32
       }
       if (!this.doing && this.go) {
-        this.go.transform.position.x = this.gameObject.transform.position.x + 40 * Math.sin(this.go.transform.rotation)
-        this.go.transform.position.y = this.gameObject.transform.position.y - 40 * Math.cos(this.go.transform.rotation)
+        this.go.transform.position.x = this.gameObject.transform.position.x
+        this.go.transform.position.y = this.gameObject.transform.position.y
       }
     }
 

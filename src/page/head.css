@@ -11,6 +11,7 @@
     padding: 12rpx;
     padding-top: 24rpx;
     width: 100%;
+    box-sizing: border-box;
     padding: 3.2vw 1.6vw 1.6vw
 }
 

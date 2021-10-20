@@ -7,7 +7,7 @@ export default function createArrow({ x, y }: { x: number, y: number }, name = '
       width: 21,
       height: 169
     },
-    origin: { x: 0.5, y: 0.5 },
+    origin: { x: 0.5, y: 0.7 },
     position: {
       x: x,
       y: y

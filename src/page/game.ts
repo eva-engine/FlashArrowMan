@@ -18,6 +18,7 @@ import HPText from '../components/HPText';
 import { Event } from '@eva/plugin-renderer-event';
 import { getGame } from './gamebase';
 import event from '../event';
+import { FadeText } from '../gameObjects/FadeText';
 let game: Game, appEvt: Event
 // const gamePage = document.querySelector('.app-container');
 export function beginGame(e: HomeMsgStruct) {
@@ -180,6 +181,7 @@ export class SingleGame {
     this.bow.scene.addChild(rightJsGo)
   }
 
+  enemyHp = 80
   reloadHome(e: HomeMsgStruct) {
     this.player.emit('onAttack');
     this.enemyName = e.data.users.find(({ name }) => name !== netPlayer.name)?.name || this.enemyName
@@ -201,7 +203,30 @@ export class SingleGame {
       const data = e.data as UnionTurnStruct['data'];
       switch (data.type) {
         case 'attack': {
+          const lost = this.enemyHp - data.hp;
+          this.enemyHp = data.hp;
           this.enemyHPText.setHP(this.enemyName + '的HP: ' + data.hp);
+          if (lost > 0) {
+            let tip = new FadeText({
+              position: {
+                x: this.enemyHPText.gameObject.transform.position.x,
+                y: this.enemyHPText.gameObject.transform.position.y + 30,
+              }
+            }).show({
+              text: '- ' + lost,
+              style: {
+                fill: 0xee7733,
+                fontSize: 50
+              }
+            }, {
+              speed: {
+                x: 1,
+                y: 1,
+              },
+              duration: 1000
+            });
+            game.scene.addChild(tip);
+          }
           if (data.hp <= 0) {
             this.enemyHPText.setHP('你赢了');
             this.close();
@@ -209,7 +234,7 @@ export class SingleGame {
           break;
         }
         case 'emit': {
-          let { position: { x, y }, force, rotation } = data
+          let { position: { x, y }, force, rotation, forceEnhance } = data
           x = GAME_WIDTH - x
           y = -y
           force.x = -force.x
@@ -217,7 +242,8 @@ export class SingleGame {
 
           let enemy = createArrow({ x, y })
           enemy.transform.rotation = rotation + Math.PI
-
+          enemy.transform.scale.x = 1 + forceEnhance;
+          enemy.transform.scale.y = 1 + forceEnhance;
           enemy.addComponent(new Physics({
             type: PhysicsType.RECTANGLE,
             bodyOptions: {
@@ -258,7 +284,28 @@ export class SingleGame {
       })
     });
 
-    this.player.on('onAttack', () => {
+    this.player.on('onAttack', d => {
+      if (d > 0) {
+        let tip = new FadeText({
+          position: {
+            x: this.bow.transform.position.x + 100,
+            y: this.bow.transform.position.y - 80,
+          }
+        }).show({
+          text: '- ' + (d || 0),
+          style: {
+            fill: 0xff3333,
+            fontSize: 60
+          }
+        }, {
+          speed: {
+            x: 2,
+            y: -3,
+          },
+          duration: 500
+        });
+        game.scene.addChild(tip);
+      }
       netPlayer.socket.send<AttackMsgStruct>({
         type: 'turn',
         data: {
@@ -304,7 +351,8 @@ export class SingleGame {
           rotation: this.bow.transform.rotation,
           force: this.string.percent,
           ax: this.attackController.go?.transform.position.x,
-          ay: this.attackController.go?.transform.position.y
+          ay: this.attackController.go?.transform.position.y,
+          forceEnhance: this.attackController.forceEnhance
         }
       })
     })

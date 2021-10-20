@@ -12,6 +12,7 @@ export type EmitDataStruct = {
     y: number
   }
   rotation: number,
+  forceEnhance: number
 }
 
 export type AttackDataStruct = {
@@ -26,7 +27,8 @@ export type MoveDataStruct = {
   rotation: number,
   force: number,
   ax: number,
-  ay: number
+  ay: number,
+  forceEnhance: number
 }
 
 export type AttackMsgStruct = MessageStruct<AttackDataStruct, 'turn'>

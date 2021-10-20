@@ -26,6 +26,7 @@ body{
   overflow-y: scroll;
   box-sizing: border-box;
   padding: 10px;
+  height: 200vh;
 }
 .rankpage{
   position: relative;
@@ -67,4 +68,10 @@ body{
   color:#999;
   cursor: pointer;
   margin-left: 10px;
+}
+#hrefImg{
+  position: fixed;
+  width: 16vw;
+  bottom: 10rpx;
+  left: 10rpx;
 }

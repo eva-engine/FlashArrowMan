@@ -15,7 +15,7 @@ import { netPlayer } from "../../player";
 import { ListToBStruct } from "../../socket/define";
 import { watcher, WATCH_HEIGHT } from "../../watch";
 
-export function HomePage({ propHomes = [] }: { propHomes?: ListToBStruct['data'] }) {
+export function HomePage({ propHomes }: { propHomes?: ListToBStruct['data'] }) {
   const [homes, setHomes] = useState(propHomes);
   const [searchValue, setSearchValue] = useState()
 
@@ -97,6 +97,7 @@ export function HomePage({ propHomes = [] }: { propHomes?: ListToBStruct['data']
           ))
         }
       </div>
+      <img src="https://gw.alicdn.com/imgextra/i4/O1CN01mBBlMa1qw4RRthjUT_!!6000000005559-2-tps-600-600.png" id="hrefImg" />
       <canvas id="appCanvas"></canvas>
     </div>
   )

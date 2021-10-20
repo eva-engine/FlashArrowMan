@@ -11,6 +11,7 @@ import Attack from "../components/Attack";
 import Progress from "../components/Progress";
 import HPText from "../components/HPText";
 import createHP from "../gameObjects/myHP";
+import { FadeText } from "../gameObjects/FadeText";
 
 export class Fighter {
 
@@ -83,7 +84,6 @@ export class Fighter {
     const { hp: myHP, hpText: myHPText } = createHP({ position: { y: WATCH_HEIGHT / 2 + (.5 - this.index) * 100, x: 50 } })
     this.myHPText = myHPText;
     window.game.scene.addChild(myHP);
-    console.log('initHp', this.index);
   }
   attackController: Attack
   constructor(public id: number, public name: string, public hp: number, public index: number) {
@@ -92,6 +92,7 @@ export class Fighter {
     this.initProgress();
     this.initHp();
     this.attackController = this.bow.addComponent(new Attack({ box: this.box, progress: this.progress, myHPText: this.myHPText, string: this.string }))
+    this.myHPText.setHP(`HP: ${this.hp} ${this.name}`);
     this.attackController.limitPos = false;
     // @ts-ignore
     __DEV__ && (window.attack = this.attackController);
@@ -107,12 +108,15 @@ export class Fighter {
     this.attackController.go.transform.rotation = data.rotation
     this.attackController.go.transform.position.x = data.ax;
     this.attackController.go.transform.position.y = data.ay;
+    this.attackController.go.transform.scale.x = data.forceEnhance + 1;
+    this.attackController.go.transform.scale.y = data.forceEnhance + 1;
   }
   handleEmit(data: EmitDataStruct) {
-    const { position: { x, y }, rotation, force } = data;
+    const { position: { x, y }, rotation, force, forceEnhance } = data;
     let arrow = createArrow({ x, y }, 'arrow' + this.index);
     arrow.transform.rotation = rotation;
-
+    arrow.transform.scale.x = forceEnhance + 1;
+    arrow.transform.scale.y = forceEnhance + 1;
     arrow.addComponent(new Physics({
       type: PhysicsType.RECTANGLE,
       bodyOptions: {
@@ -136,7 +140,29 @@ export class Fighter {
     }, 3000)
   }
   handleAttack(data: AttackDataStruct) {
+    const lost = this.hp - data.hp;
+    this.hp = data.hp;
     this.myHPText.setHP(`HP: ${data.hp} ${this.name}`);
+    if (lost === 0) return;
+    let tip = new FadeText({
+      position: {
+        x: this.bow.transform.position.x + 100,
+        y: this.bow.transform.position.y - 80,
+      }
+    }).show({
+      text: '- ' + lost,
+      style: {
+        fill: 0xff3333,
+        fontSize: 60
+      }
+    }, {
+      speed: {
+        x: 2,
+        y: -3,
+      },
+      duration: 500
+    });
+    window.game.scene.addChild(tip);
   }
   destroy() {
     try {

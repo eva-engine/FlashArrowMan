@@ -5,7 +5,7 @@ export default class Player extends Component {
   onAttack(num: number) {
     this.hp -= num
     this.hp = Math.max(0, this.hp)
-    this.emit('onAttack');
+    this.emit('onAttack', num);
     if (this.hp === 0) {
       this.emit('gameover');
     }

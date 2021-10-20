@@ -2,7 +2,7 @@ import { GAME_WIDTH } from "../const";
 import { netPlayer } from "../player";
 import { TempPlayer } from "../player/TempPlayer";
 import { HomeMsgStruct, WatchToBStruct } from "../socket/define";
-import { UnionTurnStruct } from "../socket/define.local";
+import { MoveDataStruct, UnionTurnStruct } from "../socket/define.local";
 import { WATCH_HEIGHT } from "../watch";
 import { Fighter } from "./fighter";
 
@@ -82,11 +82,14 @@ export class SingleWatchGame {
     });
 
   }
+  _destroyed = false
   destroy() {
+    if (this._destroyed) return;
+    this._destroyed = true;
     netPlayer.socket.releasePlayer();
     this.fighter1?.destroy();
     this.fighter2?.destroy();
-    const needDestroy = window.game.scene.transform.children.map(({gameObject})=>gameObject)
+    const needDestroy = window.game.scene.transform.children.map(({ gameObject }) => gameObject)
     for (const go of needDestroy) {
       go.destroy();
     }

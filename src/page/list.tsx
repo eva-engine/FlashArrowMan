@@ -43,7 +43,6 @@ export function ListPage() {
 
     let timer = setInterval(() => {
       fetchList()
-      console.log(1212323)
     }, 3000)
     // event.on('gameStart', () => {
     //   clearInterval(timer)
@@ -75,7 +74,7 @@ export function ListPage() {
       </div>
     </div>
     <ul className="room-list">
-      {homeList.map((item) => <li className="room-item" style={{
+      {homeList.map((item) => <li className="room-item" key={item.token} style={{
         backgroundColor: `rgb(${randomNum()},${randomNum()},${randomNum()})`
       }} onClick={() => entry(item.token)}>
         <div className="room-title">
