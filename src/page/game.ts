@@ -233,9 +233,44 @@ export class SingleGame {
   }
 
   enemyHp = 80
+  hasEnergy: any = null
   reloadHome(e: HomeMsgStruct) {
     this.player.emit('onAttack');
-    this.enemyName = e.data.users.find(({ name }) => name !== netPlayer.name)?.name || this.enemyName
+    const energy = e.data.users.find(({ name }) => name !== netPlayer.name)
+    this.hasEnergy = !!energy
+    this.enemyName = energy?.name || this.enemyName
+    if (this.hasEnergy) {
+      this.hideInviteTip()
+    }
+  }
+
+  inviteTipGO:GameObject
+  
+  showInviteTip () {
+    if (this.hasEnergy) {
+      return
+    }
+    this.inviteTipGO = new GameObject('inviteTip', {
+      size: {
+        width: 669,
+        height: 210,
+      },
+      position: {
+        x: 0,
+        y: 0
+      }
+      
+    })
+    this.inviteTipGO.addComponent(new Img({
+      resource: 'invite'
+    }))
+    game.scene.addChild(this.inviteTipGO)
+
+  }
+  
+  hideInviteTip () {
+    this.inviteTipGO?.destroy()
+    this.inviteTipGO = undefined
   }
 
   initNetReactive() {
@@ -424,6 +459,9 @@ export class SingleGame {
     this.initNetReactive();
     this.reloadHome(e);
     this.ready();
+    setTimeout(()=>{
+      this.showInviteTip()
+    }, 10000)
   }
 
   ready() {

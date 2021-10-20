@@ -63,5 +63,21 @@
     "universal-toast": "^1.2.3",
     "vconsole": "^3.9.1",
     "ws": "^6.2.2"
+  },
+  "resolutions": {
+    "@eva/eva.js": "^1.3.0-alpha.1",
+    "@eva/plugin-matterjs": "^1.3.0-alpha.1",
+    "@eva/plugin-renderer": "^1.3.0-alpha.1",
+    "@eva/plugin-renderer-event": "^1.3.0-alpha.1",
+    "@eva/plugin-renderer-graphics": "^1.3.0-alpha.1",
+    "@eva/plugin-renderer-img": "^1.3.0-alpha.1",
+    "@eva/plugin-renderer-render": "^1.3.0-alpha.1",
+    "@eva/plugin-renderer-sprite-animation": "^1.3.0-alpha.1",
+    "@eva/plugin-renderer-text": "^1.3.0-alpha.1",
+    "@eva/plugin-renderer-tiling-sprite": "^1.3.0-alpha.1",
+    "@eva/plugin-transition": "^1.3.0-alpha.1",
+    "@eva/plugin-sound": "^1.3.0-alpha.1",
+    "@eva/renderer-adapter": "^1.3.0-alpha.1",
+    "@eva/plugin-renderer-particles": "^1.3.0-alpha.1"
   }
 }
