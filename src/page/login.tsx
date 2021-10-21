@@ -9,7 +9,7 @@ export function LoginPage({ dispose }: { dispose: () => any }) {
     const tel = localStorage['QIANER_TEL'];
     const time = localStorage['QIANER_TIME'];
     if (name && (time || tel)) {
-      wantEnter(name, tel, time).then(bool => {
+      wantEnter(name, tel ?? '0', time).then(bool => {
         if (bool) {
           Toast.show('自动登录成功，欢迎: ' + name);
         }
