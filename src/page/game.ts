@@ -21,6 +21,7 @@ import event from '../event';
 import { FadeText } from '../gameObjects/FadeText';
 import { Sound } from '@eva/plugin-sound';
 import { Graphics } from '@eva/plugin-renderer-graphics';
+import { Attribute } from '../components/Attribute';
 let game: Game, appEvt: Event
 // const gamePage = document.querySelector('.app-container');
 export async function beginGame(e: HomeMsgStruct) {
@@ -314,7 +315,8 @@ export class SingleGame {
             },
             stopRotation: true,
           }))
-
+          // @ts-ignore
+          enemy.addComponent(new Attribute((force.x ** 2 + force.y ** 2) ** .5))
           game.scene.addChild(enemy)
 
           setTimeout(() => {

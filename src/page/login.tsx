@@ -22,7 +22,7 @@ export function LoginPage({ dispose }: { dispose: () => any }) {
     tel = (document.querySelector('#telInput') as HTMLInputElement).value,
     time = Date.now()) {
     if (!name) {
-      Toast.show('请输入昵称～')
+      Toast.show('请输入昵称～');
       return
     }
     const result = await netPlayer.init(name, time, tel);

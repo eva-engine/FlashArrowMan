@@ -106,14 +106,20 @@ export class Fighter {
     this.string.setPercent(data.force);
 
     if (!this.attackController.go) return;
+    const oldVersion = data.forceEnhance === undefined;
+    data.forceEnhance = data.forceEnhance || 0;
+    const scale = data.forceEnhance + 1;
+    if (oldVersion) {
+      data.ax += Math.sin(-data.rotation) * 40;
+      data.ay += Math.cos(data.rotation) * 40;
+    }
     this.attackController.go.transform.rotation = data.rotation
     this.attackController.go.transform.position.x = data.ax;
     this.attackController.go.transform.position.y = data.ay;
-    const scale = data.forceEnhance + 1;
     this.attackController.go.transform.scale.x = scale;
     this.attackController.go.transform.scale.y = scale;
     const r = -data.rotation;
-    if (data.x !== data.ax || data.forceEnhance > 0) {
+    if (!oldVersion && (data.x !== data.ax || data.forceEnhance > 0)) {
       try {
         this.attackController.particles.play();
         try {
@@ -130,7 +136,8 @@ export class Fighter {
     }
   }
   handleEmit(data: EmitDataStruct) {
-    const { position: { x, y }, rotation, force, forceEnhance } = data;
+    let { position: { x, y }, rotation, force, forceEnhance } = data;
+    forceEnhance = forceEnhance || 0;
     let arrow = createArrow({ x, y }, 'arrow' + this.index);
     arrow.transform.rotation = rotation;
     arrow.transform.scale.x = forceEnhance + 1;

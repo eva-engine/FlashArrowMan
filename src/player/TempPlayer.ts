@@ -12,7 +12,7 @@ export class TempPlayer extends EventEmitter<MessageType> {
 
   private delay: number = NaN
 
-  private extraWait: number = 1000
+  private extraWait: number = 0
 
   private delayQueue: DelayListenerStruct[] = []
 

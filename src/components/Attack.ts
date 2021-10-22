@@ -4,6 +4,7 @@ import { Event } from "@eva/plugin-renderer-event"
 import { Particles, ParticleSystem } from "@eva/plugin-renderer-particles"
 import { GAME_HEIGHT, GAME_WIDTH, QIAN_PHYSICS_CONFIG } from "../const"
 import createArrow from "../gameObjects/arrow"
+import { Attribute } from "./Attribute"
 import BowString from "./BowString"
 import HPText from "./HPText"
 import Player from "./Player"
@@ -60,17 +61,13 @@ export default class Attack extends Component {
 
     this.boxPhysics = this.box.getComponent(Physics);
     this.boxPhysics.on('collisionStart', (x: GameObject) => {
-      const speed = x.getComponent(Physics).body.speed;
+      let force = x.getComponent(Attribute)?.force || 0;
       const scale = x.transform.scale.x;
       x.destroy();
       if (!window.isPlayerClient) return;
       const player = this.gameObject.getComponent(Player);
-      // 24 < speed < 60
-      // const lost = ~~(speed / 6 + (scale - 1) * 5);
-      const lost = Math.round((speed / 6) + ((scale - 1) * 5));
-      if (lost > 4) {
-        console.log(speed, scale);
-      }
+      force /= scale ** 2;
+      const lost = Math.round((force / .077) + ((scale - 1) * 5)) || 0;
       player.onAttack(lost);
       this.myHPText.setHP('我的HP：' + player.hp);
     })

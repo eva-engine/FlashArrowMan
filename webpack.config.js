@@ -7,7 +7,13 @@ const { ESBuildMinifyPlugin } = require('esbuild-loader')
 const os = require('os');
 function getLocalIp() {
   const ifaces = os.networkInterfaces();
-  return Object.values(ifaces).find(dev => dev[1]?.address.startsWith('30.') || dev[1]?.address.startsWith('192.'))?.[1]?.address;
+  for (const iface of Object.values(ifaces)) {
+    for (const dev of iface) {
+      if (dev.address.startsWith('30.') || dev.address.startsWith('192.')) {
+        return dev.address;
+      }
+    }
+  }
 }
 const localIp = getLocalIp() ?? '0.0.0.0';
 console.log('use dev ip address: ', localIp);
@@ -105,7 +111,7 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       __DEV__: process.env.WEBPACK_DEV_SERVER ? true : false,
-      __SERVER_PATH__: (process.env.WEBPACK_DEV_SERVER && false) ? '"ws://' + localIp + ':8081"' : '"wss://www.anxyser.xyz/qianserver2"'
+      __SERVER_PATH__: (process.env.WEBPACK_DEV_SERVER ) ? '"ws://' + localIp + ':8081"' : '"wss://www.anxyser.xyz/qianserver2"'
     })
   ],
   optimization: {
