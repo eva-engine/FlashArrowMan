@@ -40,10 +40,10 @@ export function ListPage() {
     })
   }
   useEffect(() => {
-
+    fetchList()
     let timer = setInterval(() => {
       fetchList()
-    }, 3000)
+    }, 1000)
     // event.on('gameStart', () => {
     //   clearInterval(timer)
     // })
