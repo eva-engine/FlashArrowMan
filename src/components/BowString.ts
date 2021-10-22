@@ -3,6 +3,7 @@ import { Graphics } from "@eva/plugin-renderer-graphics";
 
 const DEFAULT_Y = 34
 export default class BowString extends Component {
+  static componentName = 'BowString'
   public percent: number = 0;
   private leftGraphics: Graphics;
   private rightGraphics: Graphics;

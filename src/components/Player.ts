@@ -1,6 +1,7 @@
 import { Component } from "@eva/eva.js";
 
 export default class Player extends Component {
+  static componentName = 'Player'
   hp: number = 80;
   onAttack(num: number) {
     this.hp -= num

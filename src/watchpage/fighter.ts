@@ -121,9 +121,9 @@ export class Fighter {
     const r = -data.rotation;
     if (!oldVersion && (data.x !== data.ax || data.forceEnhance > 0)) {
       try {
-        this.attackController.particles.play();
+        this.attackController.emitParticle.play();
         try {
-          this.attackController.particles.emitter.ownerPos.set(
+          this.attackController.emitParticle.emitter.ownerPos.set(
             data.ax - Math.sin(r) * scale * 100,
             data.ay - Math.cos(r) * scale * 100,
           )
@@ -143,7 +143,7 @@ export class Fighter {
     arrow.transform.scale.x = forceEnhance + 1;
     arrow.transform.scale.y = forceEnhance + 1;
     try {
-      this.attackController.particles.emitter.emit = false;
+      this.attackController.emitParticle.emitter.emit = false;
     } catch {
 
     }

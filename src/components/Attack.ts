@@ -9,6 +9,7 @@ import BowString from "./BowString"
 import HPText from "./HPText"
 import Player from "./Player"
 import Progress from "./Progress"
+import { Tail } from "./Tail"
 interface IProps {
   box: GameObject;
   evt: Event;
@@ -38,15 +39,17 @@ export default class Attack extends Component {
   private player: Player
   private boxPhysics: Physics
 
-  particles: Particles
+  // emitParticle: Particles
+  tailParticle: Particles
 
   init({ box, progress, string, myHPText }: IProps) {
     this.box = box;
-    const emiterGo = new GameObject('emitter');
+    const emitterGo = new GameObject('emitter');
+    // this.emitParticle = emitterGo.addComponent(new Particles({ resource: 'emitter' }));
+    window.game.scene.addChild(emitterGo);
+    // this.emitParticle.pause();
 
-    this.particles = emiterGo.addComponent(new Particles({ resource: 'emitter' }));
-    window.game.scene.addChild(emiterGo);
-    this.particles.pause();
+
     // this.evt = evt
     this.progress = progress
     this.string = string
@@ -70,6 +73,15 @@ export default class Attack extends Component {
       const lost = Math.round(4 + 4 * (force - .3) / .47 + ((scale - 1) * 7)) || 0;
       player.onAttack(lost);
       this.myHPText.setHP('我的HP：' + player.hp);
+      const boomGo = new GameObject('emitter', {
+        position: {
+          x: this.gameObject.transform.position.x,
+          y: this.gameObject.transform.position.y
+        }
+      });
+      const boomParticle = boomGo.addComponent(new Particles({ resource: 'boom' }));
+      window.game.scene.addChild(boomGo);
+      boomParticle.play();
     })
 
     this.myHPText.setHP('我的HP：' + this.player.hp)
@@ -84,7 +96,13 @@ export default class Attack extends Component {
     if (this.progress?.canArrow()) {
       this.doing = true
       this.beginTime = Date.now();
-      this.particles.play();
+      // this.emitParticle.play();
+
+      this.go.addComponent(new Tail({ resource: 'tail' }));
+      // const tailGo = new GameObject('tail');
+      // this.tailParticle = tailGo.addComponent(new Tail({ resource: 'tail' }, this.go));
+      // window.game.scene.addChild(tailGo);
+      // this.tailParticle.play();
     }
   }
   onDrag(e: JoystickEventParams) {
@@ -118,15 +136,15 @@ export default class Attack extends Component {
     const xy2 = (e.x ** 2 + e.y ** 2) ** .5;
     const rx = e.x / xy2;
     const ry = e.y / xy2;
-    this.particles.emitter.ownerPos.set(
-      this.go.transform.position.x - rx * scale * 100,
-      this.go.transform.position.y - ry * scale * 100,
-    )
+    // this.emitParticle.emitter.ownerPos.set(
+    //   this.go.transform.position.x - rx * scale * 100,
+    //   this.go.transform.position.y - ry * scale * 100,
+    // )
 
   }
   onEnd() {
     this.string.setPercent(0);
-    this.particles.emitter.emit = false;
+    // this.emitParticle.emitter.emit = false;
     if (!this.doing) return
 
     const speed2 = this.force * 0.5 + .1 // 这是力

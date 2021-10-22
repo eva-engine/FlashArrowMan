@@ -2,6 +2,7 @@ import { Component } from "@eva/eva.js"
 import { Text } from "@eva/plugin-renderer-text"
 
 export default class HPText extends Component {
+  static componentName = 'HPText'
   text: Text
   awake() {
     this.text = this.gameObject.getComponent(Text)

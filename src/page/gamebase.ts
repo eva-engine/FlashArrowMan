@@ -58,6 +58,7 @@ export function createGame(canvas: HTMLCanvasElement) {
       new EventSystem(),
       new GraphicsSystem(),
       new TextSystem(),
+      new ParticleSystem(),
       new PhysicsSystem({
         resolution: window.devicePixelRatio / 2,
         // isTest: true, // Whether to enable debugging mode
@@ -69,8 +70,7 @@ export function createGame(canvas: HTMLCanvasElement) {
         },
       }),
       new TilingSpriteSystem(),
-      new SoundSystem(),
-      new ParticleSystem()
+      new SoundSystem()
     ],
   });
 

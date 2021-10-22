@@ -22,6 +22,8 @@ import { FadeText } from '../gameObjects/FadeText';
 import { Sound } from '@eva/plugin-sound';
 import { Graphics } from '@eva/plugin-renderer-graphics';
 import { Attribute } from '../components/Attribute';
+import { Tail } from '../components/Tail';
+import { Particles } from '@eva/plugin-renderer-particles';
 let game: Game, appEvt: Event
 // const gamePage = document.querySelector('.app-container');
 export async function beginGame(e: HomeMsgStruct) {
@@ -245,9 +247,9 @@ export class SingleGame {
     }
   }
 
-  inviteTipGO:GameObject
-  
-  showInviteTip () {
+  inviteTipGO: GameObject
+
+  showInviteTip() {
     if (this.hasEnergy) {
       return
     }
@@ -260,7 +262,7 @@ export class SingleGame {
         x: 0,
         y: 0
       }
-      
+
     })
     this.inviteTipGO.addComponent(new Img({
       resource: 'invite'
@@ -268,8 +270,8 @@ export class SingleGame {
     game.scene.addChild(this.inviteTipGO)
 
   }
-  
-  hideInviteTip () {
+
+  hideInviteTip() {
     this.inviteTipGO?.destroy()
     this.inviteTipGO = undefined
   }
@@ -352,6 +354,7 @@ export class SingleGame {
           }))
           // @ts-ignore
           enemy.addComponent(new Attribute((force.x ** 2 + force.y ** 2) ** .5))
+          enemy.addComponent(new Tail({ resource: 'tail' }));
           game.scene.addChild(enemy)
 
           setTimeout(() => {
@@ -461,9 +464,10 @@ export class SingleGame {
     this.initNetReactive();
     this.reloadHome(e);
     this.ready();
-    setTimeout(()=>{
+    setTimeout(() => {
       this.showInviteTip()
     }, 10000)
+
   }
 
   ready() {
@@ -474,6 +478,9 @@ export class SingleGame {
     this.player.emit('onAttack');
   }
   close() {
+    this.createSuccessParticles(false)
+    this.createSuccessParticles(true)
+
     const j1 = this.leftJs;
     const j2 = this.rightJs;
     for (const j of [j1, j2]) {
@@ -485,19 +492,34 @@ export class SingleGame {
     delete this.rightJs;
 
     this.bow.removeComponent(this.attackController);
+
     setTimeout(() => {
       event.emit('gameOver')
       this.destroy();
     }, 2000);
   }
+  createSuccessParticles(right: boolean) {
+    const particles = new GameObject('particles', {
+      position: {
+        x: right ? 1624 : 0,
+        y: GAME_HEIGHT
+      },
+    })
+    particles.addComponent(new Particles({
+      resource: 'successParticle' + (right ? 'Right' : '')
+    })).play()
+
+    game.scene.addChild(particles)
+  }
   destroy() {
     this.hideInviteTip()
     this.bow.destroy();
     this.box.destroy();
-    const needDestroy = game.scene.gameObjects.filter(go => go !== game.scene);
-    for (const go of needDestroy) {
-      go.destroy();
-    }
+    game.scene.gameObjects.filter(go => go !== game.scene).forEach((go) => {
+      try {
+        go.destroy();
+      } catch (e) { }
+    })
     netPlayer.socket.releasePlayer();
   }
 }

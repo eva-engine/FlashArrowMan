@@ -128,5 +128,65 @@ export default [
       }
     },
     preload: true
+  },
+  {
+    name: 'tail',
+    type: RESOURCE_TYPE.PARTICLES,
+    src: {
+      img_0: {
+        type: 'png',
+        url: "https://gw.alicdn.com/imgextra/i2/O1CN01Fi8ma31eWAcqY8pXg_!!6000000003878-2-tps-99-99.png"
+      },
+      json: {
+        type: 'json',
+        url: './statics/tail.json'
+      }
+    },
+    preload: true
+  },
+  {
+    name: 'boom',
+    type: RESOURCE_TYPE.PARTICLES,
+    src: {
+      img_0: {
+        type: 'png',
+        url: "./statics/particle1.png"
+      },
+      json: {
+        type: 'json',
+        url: './statics/boom.json'
+      }
+    },
+    preload: true
+  },
+  {
+    name: 'successParticle',
+    type: RESOURCE_TYPE.PARTICLES,
+    src: {
+      img_0: {
+        type: 'png',
+        url: "./statics/sparks.png"
+      },
+      json: {
+        type: 'json',
+        url: './statics/successParticle.json'
+      }
+    },
+    preload: true
+  },
+  {
+    name: 'successParticleRight',
+    type: RESOURCE_TYPE.PARTICLES,
+    src: {
+      img_0: {
+        type: 'png',
+        url: "./statics/sparks.png"
+      },
+      json: {
+        type: 'json',
+        url: './statics/successParticleRight.json'
+      }
+    },
+    preload: true
   }
 ];
