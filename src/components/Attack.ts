@@ -67,7 +67,7 @@ export default class Attack extends Component {
       if (!window.isPlayerClient) return;
       const player = this.gameObject.getComponent(Player);
       force /= scale ** 2;
-      const lost = Math.round((force / .077) + ((scale - 1) * 5)) || 0;
+      const lost = Math.round(4 + 4 * (force - .3) / .47 + ((scale - 1) * 7)) || 0;
       player.onAttack(lost);
       this.myHPText.setHP('我的HP：' + player.hp);
     })

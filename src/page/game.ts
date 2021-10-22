@@ -491,6 +491,7 @@ export class SingleGame {
     }, 2000);
   }
   destroy() {
+    this.hideInviteTip()
     this.bow.destroy();
     this.box.destroy();
     const needDestroy = game.scene.gameObjects.filter(go => go !== game.scene);
