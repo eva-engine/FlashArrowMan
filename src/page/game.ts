@@ -422,7 +422,7 @@ export class SingleGame {
         data: 0
       });
       this.enemyHPText.setHP('你输了');
-      this.close();
+      this.close(false);
     })
 
   }
@@ -477,9 +477,11 @@ export class SingleGame {
     });
     this.player.emit('onAttack');
   }
-  close() {
-    this.createSuccessParticles(false)
-    this.createSuccessParticles(true)
+  close(success = true) {
+    if (success) {
+      this.createSuccessParticles(false)
+      this.createSuccessParticles(true)
+    }
 
     const j1 = this.leftJs;
     const j2 = this.rightJs;
