@@ -26,7 +26,7 @@ export function createGame(canvas: HTMLCanvasElement) {
       src: {
         image: {
           type: 'png',
-          url: 'https://gw.alicdn.com/imgextra/i1/O1CN01noX7Fw1hOKj7TAZ1x_!!6000000004267-2-tps-1288-418.png'
+          url: 'https://gw.alicdn.com/imgextra/i3/O1CN01Hz6kmt1nbyDFkGE8G_!!6000000005109-2-tps-1288-724.png'
         }
       },
       preload: true

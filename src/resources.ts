@@ -58,6 +58,17 @@ export default [
       },
     },
     preload: true,
+  },{
+    name: 'invite',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url:
+          'https://gw.alicdn.com/imgextra/i1/O1CN01cK0uHl1hG5b2PEudQ_!!6000000004249-2-tps-669-210.png',
+      },
+    },
+    preload: true,
   },
   {
     name: 'shoot',

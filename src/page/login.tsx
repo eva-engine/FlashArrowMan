@@ -9,7 +9,7 @@ export function LoginPage({ dispose }: { dispose: () => any }) {
     const tel = localStorage['QIANER_TEL'];
     const time = localStorage['QIANER_TIME'];
     if (name && (time || tel)) {
-      wantEnter(name, tel, time).then(bool => {
+      wantEnter(name, tel ?? '0', time).then(bool => {
         if (bool) {
           Toast.show('自动登录成功，欢迎: ' + name);
         }
@@ -39,7 +39,7 @@ export function LoginPage({ dispose }: { dispose: () => any }) {
   return <div className="login page">
     <input type="text" id="nameInput" placeholder="请输入你的昵称" />
     <input type="tel" id="telInput" placeholder="联系方式" />
-    <div className="tip">用于排行榜礼品寄送</div>
+    <div className="tip">用于排行榜礼品寄送和登录</div>
     <div id="enterBtn" onClick={() => wantEnter()}>进入大厅</div>
   </div>
 }
