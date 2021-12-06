@@ -15,6 +15,11 @@ table,thead,tbody,tr,td,th{
     padding: 0;
     margin: 0;
 }
+html, body {
+min-height: 100vh;
+background: url(https://gw.alicdn.com/imgextra/i3/O1CN01JrtDg91LDPkWtsvJT_!!6000000001265-0-tps-750-1624.jpg);
+background-size: 100vw 100vh;
+}
 
 body,
 button, input, select, textarea { /* for ie */

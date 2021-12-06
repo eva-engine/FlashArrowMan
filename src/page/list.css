@@ -1,4 +1,7 @@
-.list-container {}
+.list-container {
+    min-height: 100vh;
+    background-color: #fff;
+}
 
 .list-header {
     width: 750rpx;

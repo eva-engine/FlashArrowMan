@@ -54,7 +54,7 @@ export default [
       image: {
         type: 'png',
         url:
-          './statics/background.jpg',
+          'https://gw.alicdn.com/imgextra/i3/O1CN01JrtDg91LDPkWtsvJT_!!6000000001265-0-tps-750-1624.jpg',
       },
     },
     preload: true,
