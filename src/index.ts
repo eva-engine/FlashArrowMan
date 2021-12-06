@@ -5,8 +5,9 @@ import { loadPage } from "./page";
 
 
 window.React = React
-import VConsole from 'vconsole';
 
-new VConsole()
+// import VConsole from 'vconsole';
+
+// new VConsole()
 
 loadPage();
