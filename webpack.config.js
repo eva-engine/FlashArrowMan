@@ -111,7 +111,7 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       __DEV__: process.env.WEBPACK_DEV_SERVER ? true : false,
-      __SERVER_PATH__: (process.env.WEBPACK_DEV_SERVER && false) ? '"ws://' + localIp + ':8081"' : '"wss://www.anxyser.xyz/qianserver2"'
+      __SERVER_PATH__: (process.env.WEBPACK_DEV_SERVER && false) ? '"ws://' + localIp + ':8081"' : '"wss://www.anxyser.top/qianserver2"'
     })
   ],
   optimization: {
